@@ -37,7 +37,7 @@ args = parser.parse_args()
 
 def variables():
     """ Defines variables based on command line arguments. Also does some input checking on
-    the password and key length."""
+    key length variable to ensure it is a integer."""
     global args
     global encrypt
     global decrypt
