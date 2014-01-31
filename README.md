@@ -16,7 +16,7 @@ properly with most fonts.
 Decryption works the same way but in reverse.
 
 ###  License: 
-####GPLv2 
+##### GPLv2 
 
 See accompanying LICENSE file for the full license.
 
@@ -32,27 +32,27 @@ cryptographer.py (-e | -d) -p PASSWORD -k NUMBER (-m MESSAGE | -i INPUT_FILENAME
 
 ### Example usage:
 
-#### Encrypt the message “This is a message.” with the password “password” and the key length “20”:
+##### Encrypt the message “This is a message.” with the password “password” and the key length “20”:
 
 cryptographer.py -e -p password -k 20 -m “This is a message.”
 
 
-#### Encrypt the file “secret_file.txt” with the pass phase “secret code words” and the key length “15”:
+##### Encrypt the file “secret_file.txt” with the pass phase “secret code words” and the key length “15”:
 
 cryptographer.py -e -p “secret code words” -l 15 -i secret_file.txt
 
 
-#### Encrypt the same file as above, but write the output to the file “encrypted_file.txt”:
+##### Encrypt the same file as above, but write the output to the file “encrypted_file.txt”:
 
 cryptographer.py -e -p “secret code words” -l 15 -i secret_file.txt -o encrypted_file.txt
 
 
-#### In case you want to see what is happening during the encryption process:
+##### In case you want to see what is happening during the encryption process:
 
 cryptographer.py -e -p “secret code words” -l 15 -i secret_file.txt -o encrypted_file.txt -v
 
 
-#### To decrypt the filed called “encrypted_file.txt” and write the output to “decrypted_file.txt”:
+##### To decrypt the filed called “encrypted_file.txt” and write the output to “decrypted_file.txt”:
 
 cryptographer.py -e -p “secret code words” -l 15 -i encrypted_file.txt -o decrypted_file.txt
 
