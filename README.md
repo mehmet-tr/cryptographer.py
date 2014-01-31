@@ -1,7 +1,7 @@
 cryptographer.py
 ================
 
-h3. What is cryptographer.py?
+### What is cryptographer.py?
 
 cryptographer.py is a python program I wrote to learn more about encryption and python.
 It is designed to encrypt messages using a two phase encryption technique I
@@ -15,48 +15,48 @@ properly with most fonts.
 
 Decryption works the same way but in reverse.
 
-H3. License: 
-GPLv2 
+###  License: 
+####GPLv2 
 
 See accompanying LICENSE file for the full license.
 
-h3. Installation:
+### Installation:
 
 No installation is required to run cryptographer.py. Simply give the file execute privileges
 and run it. If you do not place the cryptographer.py file inside your path you will need to
 specify its relative or absolute path. 
 
-H3. Usage:
+### Usage:
 
 cryptographer.py (-e | -d) -p PASSWORD -k NUMBER (-m MESSAGE | -i INPUT_FILENAME) [-o OUTPUT_FILENAME] [-v]
 
-H3. Example usage:
+### Example usage:
 
-Encrypt the message “This is a message.” with the password “password” and the key length “20”:
+#### Encrypt the message “This is a message.” with the password “password” and the key length “20”:
 
 cryptographer.py -e -p password -k 20 -m “This is a message.”
 
 
-Encrypt the file “secret_file.txt” with the pass phase “secret code words” and the key length “15”:
+#### Encrypt the file “secret_file.txt” with the pass phase “secret code words” and the key length “15”:
 
 cryptographer.py -e -p “secret code words” -l 15 -i secret_file.txt
 
 
-Encrypt the same file as above, but write the output to the file “encrypted_file.txt”:
+#### Encrypt the same file as above, but write the output to the file “encrypted_file.txt”:
 
 cryptographer.py -e -p “secret code words” -l 15 -i secret_file.txt -o encrypted_file.txt
 
 
-In case you want to see what is happening during the encryption process:
+#### In case you want to see what is happening during the encryption process:
 
 cryptographer.py -e -p “secret code words” -l 15 -i secret_file.txt -o encrypted_file.txt -v
 
 
-To decrypt the filed called “encrypted_file.txt” and write the output to “decrypted_file.txt”:
+#### To decrypt the filed called “encrypted_file.txt” and write the output to “decrypted_file.txt”:
 
 cryptographer.py -e -p “secret code words” -l 15 -i encrypted_file.txt -o decrypted_file.txt
 
-h3. Usage tips:
+### Usage tips:
 
 The hashing function does not make passwords harder to guess, it simply makes sure that there
 are enough rounds of encryption and that the characters used in the encryption have a wide
