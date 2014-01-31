@@ -21,13 +21,18 @@ parser = argparse.ArgumentParser()
 action = parser.add_mutually_exclusive_group(required=True)
 action.add_argument('-e', '--encrypt', help='For encrypting a file/message.', action='store_true')
 action.add_argument('-d', '--decrypt', help='For decrypting a file/message.', action='store_true')
-parser.add_argument('-p', '--password', required=True, help='The passphase with which to encrypt/decrypt. If more than a word, use quotes.')
-parser.add_argument('-k', '--key', required=True, help='Determine key length. Suggested values between 10 and 1000, very high key lengths will take a long time.')
+parser.add_argument('-p', '--password', required=True, help='The passphase with which to encrypt/\
+    decrypt. If more than a word, use quotes.')
+parser.add_argument('-k', '--key', required=True, help='Determine key length. Suggested values\
+    between 10 and 1000, very high key lengths will take a long time.')
 message = parser.add_mutually_exclusive_group(required=True)
-message.add_argument('-m', '--message', help='The message to be encrypted/decrypted. Messages must be inside quotation marks.')
+message.add_argument('-m', '--message', help='The message to be encrypted/decrypted. Messages\
+    must be inside quotation marks.')
 message.add_argument('-i', '--inputfile', help='The file to be encrypted/decrypted.')
-parser.add_argument('-o', '--outputfile', help='The file in which to save the encrypted/decrypted message. If none is given, message will be printed to screen.')
-parser.add_argument('-v', '--verbose', help='Prints out information about the encryption/decryption process as it goes.', action='store_true')
+parser.add_argument('-o', '--outputfile', help='The file in which to save the encrypted/decrypted\
+    message. If none is given, message will be printed to screen.')
+parser.add_argument('-v', '--verbose', help='Prints out information about the encryption/\
+    decryption process as it goes.', action='store_true')
 args = parser.parse_args()
 
 def variables():
