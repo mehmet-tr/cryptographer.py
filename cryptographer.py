@@ -12,7 +12,7 @@ Description: This program performs a two phase cryptographic function
              of the rounds are complete, the encrypted/decrypted message
              can either be printed to standard out or written to a file.
 Usage:
-cryptographer.py (-e|-d) -p PASSWORD -k KEYLENGTH (-m MESSAGE | -i INPUTFILE) [-o OUTPUTFILE] [-v]
+cryptographer.py (-e|-d) -p PASSWORD -k KEYLENGTH (-m MESSAGE | -i INPUTFILE) [-o OUTPUTFILE] [-v | -vv]
 """
 
 import os, time, re, argparse

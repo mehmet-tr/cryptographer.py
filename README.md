@@ -28,7 +28,7 @@ specify its relative or absolute path.
 
 ### Usage:
 
-cryptographer.py (-e | -d) -p PASSWORD -k NUMBER (-m MESSAGE | -i INPUT_FILENAME) [-o OUTPUT_FILENAME] [-v]
+cryptographer.py (-e | -d) -p PASSWORD -k NUMBER (-m MESSAGE | -i INPUT_FILENAME) [-o OUTPUT_FILENAME] [-v | -vv]
 
 ### Example usage:
 
@@ -49,7 +49,7 @@ cryptographer.py -e -p “secret code words” -l 15 -i secret_file.txt -o encry
 
 ##### In case you want to see what is happening during the encryption process:
 
-cryptographer.py -e -p “secret code words” -l 15 -i secret_file.txt -o encrypted_file.txt -v
+cryptographer.py -e -p “secret code words” -l 15 -i secret_file.txt -o encrypted_file.txt -vv
 
 
 ##### To decrypt the filed called “encrypted_file.txt” and write the output to “decrypted_file.txt”:
