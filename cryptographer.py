@@ -31,8 +31,9 @@ message.add_argument('-m', '--message', help='The message to be encrypted/decryp
 message.add_argument('-i', '--inputfile', help='The file to be encrypted/decrypted.')
 parser.add_argument('-o', '--outputfile', help='The file in which to save the encrypted/decrypted\
     message. If none is given, message will be printed to screen.')
-parser.add_argument('-v', '--verbose', help='Prints out information about the encryption/\
-    decryption process as it goes.', action='store_true')
+parser.add_argument('-v', '--verbose', help='-v will print out the progress of the encryption as\
+    a percentage. -vv will print the progress as well as the password, hashed password, and the\
+    message at every stage of the encryption/decryption process.', action='count')
 args = parser.parse_args()
 
 def variables():
@@ -82,7 +83,7 @@ def phase1_crypto():
         encrypted_message = encrypted_message + encrypted_char
         count += 1
     message = encrypted_message
-    if verbose:
+    if verbose = 2:
         print("Round " + str(rnum) + "-- Phase 1: " + message)
 
 def phase2_crypto():
@@ -110,7 +111,7 @@ def phase2_crypto():
             encrypted_message = encrypted_message + i
         count += 1
     message = encrypted_message
-    if verbose:
+    if verbose = 2:
         print("Round " + str(rnum) + "-- Phase 2: " + message)
 
 def hash_pass():
@@ -118,7 +119,7 @@ def hash_pass():
     the keylength requirements given by the user. This allows the user to have a
     secure password without having to remember it."""
     global password
-    if verbose:
+    if verbose = 2:
         print("Unhashed password: " + password)
     t1 = len(password) + 2
     while len(str(t1)) < (int(keylength) * 4):
@@ -131,7 +132,7 @@ def hash_pass():
         n2 = int(i[2]) + 2
         p = p + chr(((n0 ** n1) ** n2) % 55000 + 48)
     password = p[:int(keylength)]
-    if verbose:
+    if verbose = 2:
         print("Hashed password: " + password)
 
 
@@ -144,7 +145,7 @@ def crypto():
     for char in password:
         phase1_crypto()
         phase2_crypto()
-        if verbose:
+        if verbose > 0:
             print((rnum / len(password)) * 100, "% Complete.")
         rnum += 1
 
