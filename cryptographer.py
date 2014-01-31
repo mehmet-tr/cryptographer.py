@@ -83,7 +83,7 @@ def phase1_crypto():
         encrypted_message = encrypted_message + encrypted_char
         count += 1
     message = encrypted_message
-    if verbose = 2:
+    if verbose == 2:
         print("Round " + str(rnum) + "-- Phase 1: " + message)
 
 def phase2_crypto():
@@ -111,7 +111,7 @@ def phase2_crypto():
             encrypted_message = encrypted_message + i
         count += 1
     message = encrypted_message
-    if verbose = 2:
+    if verbose == 2:
         print("Round " + str(rnum) + "-- Phase 2: " + message)
 
 def hash_pass():
@@ -119,7 +119,7 @@ def hash_pass():
     the keylength requirements given by the user. This allows the user to have a
     secure password without having to remember it."""
     global password
-    if verbose = 2:
+    if verbose == 2:
         print("Unhashed password: " + password)
     t1 = len(password) + 2
     while len(str(t1)) < (int(keylength) * 4):
@@ -132,7 +132,7 @@ def hash_pass():
         n2 = int(i[2]) + 2
         p = p + chr(((n0 ** n1) ** n2) % 55000 + 48)
     password = p[:int(keylength)]
-    if verbose = 2:
+    if verbose == 2:
         print("Hashed password: " + password)
 
 
@@ -173,7 +173,7 @@ def encrypt_func():
             print()
             print(str(nonce)+message)
             print()
-        if verbose:
+        if verbose > 0:
             print("Encryption complete.")
     elif input_file:
         if os.path.isfile(input_file):
@@ -189,7 +189,7 @@ def encrypt_func():
                 print()
                 print(str(nonce)+message)
                 print()
-            if verbose:
+            if verbose > 0:
                 print("Encryption complete.")
         else:
             print("No such file as", input_file)
@@ -224,7 +224,7 @@ def decrypt_func():
             print()
             print(message)
             print()
-        if verbose:
+        if verbose > 0:
             print("Decryption complete.")
     elif input_file:
         if os.path.isfile(input_file):
@@ -244,7 +244,7 @@ def decrypt_func():
                 print()
                 print(message)
                 print()
-            if verbose:
+            if verbose > 0:
                 print("Decryption complete.")
         else:
             print("No such file as", input_file)
