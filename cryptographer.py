@@ -37,7 +37,7 @@ args = parser.parse_args()
 
 def variables():
     """ Defines variables based on command line arguments. Also does some input checking on
-    key length variable to ensure it is a integer."""
+    key length variable to ensure it is a integer and greater than zero."""
     global args
     global encrypt
     global decrypt
@@ -54,6 +54,9 @@ def variables():
         keylength = int(args.key)
     except ValueError:
         print("The key length must be an integer.")
+        exit(1)
+    if keylength < 1:
+        print("The key length must be greater than 0")
         exit(1)
     message = args.message
     input_file = args.inputfile
