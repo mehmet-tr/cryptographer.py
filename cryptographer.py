@@ -3,8 +3,8 @@
 Title: cryptographer.py
 Author: Caleb Cooper
 License: GPLv2
-Version: 1.0
-Version Date: 2014-01-30
+Version: 1.1
+Version Date: 2014-01-31
 Description: This program performs a two phase cryptographic function
              upon a supplied message, either inline or from a file.
              This function is repeated for a number of rounds determined
