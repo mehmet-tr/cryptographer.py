@@ -33,8 +33,9 @@ message.add_argument('-m', '--message', help='The message to be encrypted/decryp
 message.add_argument('-i', '--inputfile', help='The file to be encrypted/decrypted.')
 parser.add_argument('-o', '--outputfile', help='The file in which to save the encrypted/decrypted\
     message. If none is given, message will be printed to screen.')
-parser.add_argument('-v', '--verbose', help='Prints out information about the encryption/\
-    decryption process as it goes.', action='store_true')
+parser.add_argument('-v', '--verbose', help='-v will print out the progress of the encryption as\
+    a percentage. -vv will print the progress as well as the password, hashed password, and the\
+    message at every stage of the encryption/decryption process.', action='count')
 args = parser.parse_args()
 
 def variables():
@@ -64,7 +65,10 @@ def variables():
     message = args.message
     input_file = args.inputfile
     output_file = args.outputfile
-    verbose = args.verbose
+    if args.verbose:
+        verbose = args.verbose
+    else:
+        verbose = 0
     full_message = []
 
 
@@ -86,8 +90,8 @@ def phase1_crypto():
         encrypted_message = encrypted_message + encrypted_char
         count += 1
     full_message[(rnum % len(full_message))] = encrypted_message
-    if verbose:
-        print("Round " + str(rnum) + "-- Phase 1: " + message)
+    if verbose == 2:
+        print("Round " + str(rnum) + "-- Phase 1: " + ''.join(full_message))
 
 def phase2_crypto():
     """ Phase 2 encrypts every fifth character in the message, starting with the one in
@@ -114,15 +118,15 @@ def phase2_crypto():
             encrypted_message = encrypted_message + i
         count += 1
     full_message[(rnum % len(full_message))] = encrypted_message
-    if verbose:
-        print("Round " + str(rnum) + "-- Phase 2: " + message)
+    if verbose == 2:
+        print("Round " + str(rnum) + "-- Phase 2: " + ''.join(full_message))
 
 def hash_pass():
     """ The password is hashed to ensure that the resulting hashed password will meet
     the keylength requirements given by the user. This allows the user to have a
     secure password without having to remember it."""
     global password
-    if verbose:
+    if verbose == 2:
         print("Unhashed password: " + password)
     t1 = len(password) + 2
     while len(str(t1)) < (int(keylength) * 4):
@@ -135,7 +139,7 @@ def hash_pass():
         n2 = int(i[2]) + 2
         p = p + chr(((n0 ** n1) ** n2) % 55000 + 48)
     password = p[:int(keylength)]
-    if verbose:
+    if verbose == 2:
         print("Hashed password: " + password)
 
 
@@ -180,7 +184,7 @@ def encrypt_func():
             print()
             print(str(nonce)+message)
             print()
-        if verbose:
+        if verbose > 0:
             print("Encryption complete.")
     elif input_file:
         if os.path.isfile(input_file):
@@ -200,7 +204,7 @@ def encrypt_func():
                 print()
                 print(str(nonce)+message)
                 print()
-            if verbose:
+            if verbose > 0:
                 print("Encryption complete.")
         else:
             print("No such file as", input_file)
@@ -238,7 +242,7 @@ def decrypt_func():
             print()
             print(message)
             print()
-        if verbose:
+        if verbose > 0:
             print("Decryption complete.")
     elif input_file:
         if os.path.isfile(input_file):
@@ -261,7 +265,7 @@ def decrypt_func():
                 print()
                 print(message)
                 print()
-            if verbose:
+            if verbose > 0:
                 print("Decryption complete.")
         else:
             print("No such file as", input_file)
