@@ -15,7 +15,9 @@ Usage:
 cryptographer.py (-e|-d) -p PASSWORD -k KEYLENGTH (-m MESSAGE | -i INPUTFILE) [-o OUTPUTFILE] [-v | -vv]
 """
 
-import os, time, argparse
+import os, time, argparse, threading
+from multiprocessing import cpu_count
+from queue import Queue
 
 parser = argparse.ArgumentParser()
 action = parser.add_mutually_exclusive_group(required=True)
