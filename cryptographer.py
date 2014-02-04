@@ -50,6 +50,8 @@ def variables():
     global input_file
     global output_file
     global verbose
+    global threads
+    threads = cpu_count() + 1
     encrypt = args.encrypt
     decrypt = args.decrypt
     password = args.password
@@ -147,6 +149,7 @@ def crypto():
     message."""
     global rnum
     global char
+    rnum = 1
     for char in password:
         phase1_crypto()
         phase2_crypto()
@@ -166,7 +169,6 @@ def encrypt_func():
     global rnum
     nonce = chr(int(time.time() * 10000000) % 55000)
     hash_pass()
-    rnum = 1
     if message:
         crypto()
         if output_file:
@@ -218,7 +220,6 @@ def decrypt_func():
     if message:
         nonce = message[0]
         message = message[1:]
-        rnum = 1
         crypto()
         if output_file:
             out_file = open(output_file, 'w')
@@ -238,7 +239,6 @@ def decrypt_func():
             nonce = message[0]
             message = message[1:]
             in_file.close()
-            rnum = 1
             crypto()
             if output_file:
                 out_file = open(output_file, 'w')
