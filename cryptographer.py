@@ -72,7 +72,7 @@ def variables():
         verbose = 0
 
 
-def phase1_crypto():
+def phase1_crypto(place):
     """ Phase 1 encrypts every character in the message by shifting it through the UTF-8
     alphabet by a number derived from the character of the hashed password for the current
     round and the nonce."""
@@ -81,7 +81,7 @@ def phase1_crypto():
     global message
     count = 1
     encrypted_message = ""
-    for i in message:
+    for i in full_message[place]:
         offset = int(ord(password[count % (password.count('') - 1)])) * ord(nonce)
         if encrypt:
             encrypted_char = chr(int(ord(i) + offset) % 55000)
@@ -89,11 +89,11 @@ def phase1_crypto():
             encrypted_char = chr(int(ord(i) - offset) % 55000)
         encrypted_message = encrypted_message + encrypted_char
         count += 1
-    message = encrypted_message
+    full_message[place] = encrypted_message
     if verbose == 2:
         print("Round " + str(rnum) + "-- Phase 1: " + message)
 
-def phase2_crypto():
+def phase2_crypto(place):
     """ Phase 2 encrypts every fifth character in the message, starting with the one in
     the position of the round number modulus 5, by shifting it by a number derived from
     the round number, nonce, and the ordinal position of the current round's character
@@ -106,7 +106,7 @@ def phase2_crypto():
     count = 1
     rnonce = rnum * ord(nonce)
     encrypted_message = ""
-    for i in message:
+    for i in full_message[place]:
         if count % 5 == rnum % 5:
             pass_place = int(ord(char) / len(password))
             if encrypt:
@@ -117,7 +117,7 @@ def phase2_crypto():
         else:   
             encrypted_message = encrypted_message + i
         count += 1
-    message = encrypted_message
+    full_message[place] = encrypted_message
     if verbose == 2:
         print("Round " + str(rnum) + "-- Phase 2: " + message)
 
@@ -147,15 +147,43 @@ def crypto():
     """ The purpose of this function is to repeat over every character in the
     password and execute phase 1 and 2 of the cryptographic function on the
     message."""
-    global rnum
-    global char
-    rnum = 1
-    for char in password:
-        phase1_crypto()
-        phase2_crypto()
-        if verbose > 0:
-            print((rnum / len(password)) * 100, "% Complete.")
-        rnum += 1
+    global full_message
+    global message
+    lock = threading.Lock()
+
+
+    def worker():
+        global rnum
+        global char
+        global password
+        while True:
+            place = q.get()
+            with lock:
+                rnum = 1
+                for char in password:
+                    phase1_crypto(place)
+                    phase2_crypto(place)
+                    if verbose > 0:
+                        print((rnum / len(password)) * 100, "% Complete.")
+                    rnum += 1
+            q.task_done()
+
+    q = Queue()
+    for i in range(threads):
+         t = threading.Thread(target=worker)
+         t.daemon = True 
+         t.start()
+    full_message = []
+    for line in [message[i:i+keylength] for i in range(0, len(message), keylength)]:
+            full_message.append(line)
+    place = 0
+    for chunk in full_message:
+        q.put(place)
+        place = place + 1
+
+
+    q.join()
+    message = ''.join(full_message)
 
 def encrypt_func():
     """ Performs all of the nessacerry setup and clean up to encrypt a message.
