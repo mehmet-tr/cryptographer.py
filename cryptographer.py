@@ -15,7 +15,7 @@ Usage:
 cryptographer.py (-e|-d) -p PASSWORD -k KEYLENGTH (-m MESSAGE | -i INPUTFILE) [-o OUTPUTFILE] [-v | -vv]
 """
 
-import os, time, re, argparse
+import os, time, argparse
 
 parser = argparse.ArgumentParser()
 action = parser.add_mutually_exclusive_group(required=True)
@@ -214,8 +214,8 @@ def decrypt_func():
     global rnum
     hash_pass()
     if message:
-        nonce = re.findall(r'^(.?)', message)[0]
-        message = re.findall('^.(.+)', message)[0]
+        nonce = message[0]
+        message = message[1:]
         rnum = 1
         crypto()
         if output_file:
@@ -233,8 +233,8 @@ def decrypt_func():
         if os.path.isfile(input_file):
             in_file = open(input_file)
             message = in_file.read()
-            nonce = re.findall(r'^(.?)', message)[0]
-            message = re.findall('^.(.+)', message)[0]
+            nonce = message[0]
+            message = message[1:]
             in_file.close()
             rnum = 1
             crypto()
