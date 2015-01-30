@@ -9,14 +9,14 @@ created. These messages can be entered either as part of the command or from a s
 file. The message is encrypted with password which is hashed at runtime to ensure
 complexity and length without making it hard to remember. The password is used as part
 of the encryption and to determine the number of rounds in the encryption. Once the file
-has been encrypted it can either be printed to standard out or written to a file. Encrypted 
+has been encrypted it can either be printed to standard out or written to a file. Encrypted
 text will consist of a huge variety of Unicode characters, not all of which will be displayed
 properly with most fonts.
 
 Decryption works the same way but in reverse.
 
-###  License: 
-##### GPLv2 
+###  License:
+##### GPLv2
 
 See accompanying LICENSE file for the full license.
 
@@ -24,7 +24,7 @@ See accompanying LICENSE file for the full license.
 
 No installation is required to run cryptographer.py. Simply give the file execute privileges
 and run it. If you do not place the cryptographer.py file inside your path you will need to
-specify its relative or absolute path. 
+specify its relative or absolute path.
 
 ### Usage:
 
@@ -39,22 +39,22 @@ cryptographer.py -e -p password -k 20 -m “This is a message.”
 
 ##### Encrypt the file “secret_file.txt” with the pass phase “secret code words” and the key length “15”:
 
-cryptographer.py -e -p “secret code words” -l 15 -i secret_file.txt
+cryptographer.py -e -p “secret code words” -k 15 -i secret_file.txt
 
 
 ##### Encrypt the same file as above, but write the output to the file “encrypted_file.txt”:
 
-cryptographer.py -e -p “secret code words” -l 15 -i secret_file.txt -o encrypted_file.txt
+cryptographer.py -e -p “secret code words” -k 15 -i secret_file.txt -o encrypted_file.txt
 
 
 ##### In case you want to see what is happening during the encryption process:
 
-cryptographer.py -e -p “secret code words” -l 15 -i secret_file.txt -o encrypted_file.txt -vv
+cryptographer.py -e -p “secret code words” -k 15 -i secret_file.txt -o encrypted_file.txt -vv
 
 
 ##### To decrypt the filed called “encrypted_file.txt” and write the output to “decrypted_file.txt”:
 
-cryptographer.py -e -p “secret code words” -l 15 -i encrypted_file.txt -o decrypted_file.txt
+cryptographer.py -e -p “secret code words” -k 15 -i encrypted_file.txt -o decrypted_file.txt
 
 ### Usage tips:
 
@@ -71,9 +71,8 @@ very long time without adding a whole lot of security.
 The key length is part of the secret key used to decrypt a message. You MUST be able to
 remember this in order to decrypt the message. However, making it something guessable
 (birthday, number of cats, age of child, etc) is unadvised.
-Use something that is unlikely to be guessed by easy to remember. 
+Use something that is unlikely to be guessed by easy to remember.
 
 Verbose output should NOT be saved to a file as it contains sensitive information which will
 make it trivial to decrypt the message. Use the verbose mode only for testing purposes and
 use the -o argument to save encrypt/decrypt messages to a file.
- 
