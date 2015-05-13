@@ -1,7 +1,7 @@
 cryptographer.py
 ================
 
-[![Build Status](https://travis-ci.org/xzovy/cryptographer.py.svg?branch=master)](https://travis-ci.org/xzovy/cryptographer.py)
+[![Build Status](https://travis-ci.org/xzovy/cryptographer.py.svg?branch=flake8)](https://travis-ci.org/xzovy/cryptographer.py)
 
 ### What is cryptographer.py?
 
