@@ -1,6 +1,8 @@
 cryptographer.py
 ================
 
+[![Build Status](https://travis-ci.org/xzovy/cryptographer.py.svg?branch=master)](https://travis-ci.org/xzovy/cryptographer.py)
+
 ### What is cryptographer.py?
 
 cryptographer.py is a python program I wrote to learn more about encryption and python.
