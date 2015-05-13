@@ -16,8 +16,6 @@ cryptographer.py (-e|-d) -p PASSWORD -k KEYLENGTH (-m MESSAGE | -i INPUTFILE) [-
 """
 
 import os, time, argparse, threading
-from multiprocessing import cpu_count
-from queue import Queue
 
 parser = argparse.ArgumentParser()
 action = parser.add_mutually_exclusive_group(required=True)
@@ -50,8 +48,6 @@ def variables():
     global input_file
     global output_file
     global verbose
-    global threads
-    threads = cpu_count() + 1
     encrypt = args.encrypt
     decrypt = args.decrypt
     password = args.password

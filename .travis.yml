@@ -1,0 +1,8 @@
+language: python
+python:
+  - "3.3"
+  - "3.4"
+script: 
+  - python3 cryptographer.py -e -p pass -k 10 -i test -o test.encrypted
+  - python3 cryptographer.py -d -p pass -k 10 -i test.encrypted -o test.decrypted
+  - test $(md5sum test) == $(md5sum test.decrypted) 
