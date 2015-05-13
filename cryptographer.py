@@ -15,7 +15,9 @@ Usage:
 cryptographer.py (-e|-d) -p PASSWORD -k KEYLENGTH (-m MESSAGE | -i INPUTFILE) [-o OUTPUTFILE] [-v | -vv]
 """
 
-import os, time, argparse, threading
+import os
+import time
+import argparse
 
 parser = argparse.ArgumentParser()
 action = parser.add_mutually_exclusive_group(required=True)
@@ -35,6 +37,7 @@ parser.add_argument('-v', '--verbose', help='-v will print out the progress of t
     a percentage. -vv will print the progress as well as the password, hashed password, and the\
     message at every stage of the encryption/decryption process.', action='count')
 args = parser.parse_args()
+
 
 def variables():
     """ Defines variables based on command line arguments. Also does some input checking on
