@@ -113,7 +113,7 @@ def phase2_crypto():
             if decrypt:
                 encrypted_char = chr((ord(i) - (pass_place * rnonce)) % 55000)
             encrypted_message = encrypted_message + encrypted_char
-        else:   
+        else:
             encrypted_message = encrypted_message + i
         count += 1
     message = encrypted_message
@@ -267,7 +267,7 @@ def main():
         encrypt_func()
     elif decrypt:
         decrypt_func()
-    else: 
+    else:
         print("You must specify if encryption (-e) or decryption (-d) should be used.")
         exit(1)
 
