@@ -144,10 +144,11 @@ def hash_pass(password, keylength, verbose):
     if verbose == 2:
         print("Hashed password: " + password)
 
-def crypto_func(function, message, output_file, verbose, password, keylength):
-    """ Performs all of the nessacerry setup and clean up to encrypt or
+def main(args):
+    """Performs all of the nessacerry setup and clean up to encrypt or
     decrypt a message based on the -e or -d arugments.
     Also handles writing to the output file or standard out."""
+    function, message, output_file, verbose, password, keylength = variables(args)
     if function == "encrypt":
         nonce = chr(int(time.time() * 10000000) % 55000)
     elif function == "decrypt":
@@ -184,12 +185,5 @@ def crypto_func(function, message, output_file, verbose, password, keylength):
     else:
         print("You must either enter a message (-m) or specify a input file (-i).")
         exit(1)
-
-
-def main(args):
-    """ The primary function for the program, calls the variables function then
-    decides whether to call the encrypt or the decrypt function."""
-    function, message, output_file, verbose, password, keylength = variables(args)
-    crypto_func(function, message, output_file, verbose, password, keylength)
 
 main(args)
