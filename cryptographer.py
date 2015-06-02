@@ -39,21 +39,19 @@ parser.add_argument('-v', '--verbose', help='-v will print out the progress of t
 args = parser.parse_args()
 
 
-def variables():
+def variables(args):
     """ Defines variables based on command line arguments. Also does some input checking on
     key length variable to ensure it is a integer and greater than zero."""
-    global args
-    global encrypt
-    global decrypt
-    global password
-    global keylength
-    global message
-    global input_file
-    global output_file
-    global verbose
-    encrypt = args.encrypt
-    decrypt = args.decrypt
+    
+    if  args.encrypt:
+        function = "encrypt"
+    elif args.decrypt:
+        function = "decrypt"
+    else:
+        print("You must specify if encryption (-e) or decryption (-d) should be used.")
+        exit(1)
     password = args.password
+    
     try:
         keylength = int(args.key)
     except ValueError:
@@ -62,55 +60,60 @@ def variables():
     if keylength < 1:
         print("The key length must be greater than 0")
         exit(1)
-    message = args.message
-    input_file = args.inputfile
+    
+    if args.inputfile:
+        if os.path.isfile(args.inputfile):
+            in_file = open(args.inputfile)
+            message = in_file.read()
+        else:
+            print("No such file as", args.inputfile)
+            exit(1)
+    elif args.message:
+        message = args.message
+        
     output_file = args.outputfile
+    
     if args.verbose:
         verbose = args.verbose
     else:
         verbose = 0
+    
+    return function, message, output_file, verbose, password, keylength
 
 
-def phase1_crypto():
+def phase1_crypto(password, nonce, rnum, message, function, verbose):
     """ Phase 1 encrypts every character in the message by shifting it through the UTF-8
     alphabet by a number derived from the character of the hashed password for the current
     round and the nonce."""
-    global password
-    global nonce
-    global message
     count = 1
     encrypted_message = ""
     for i in message:
         offset = int(ord(password[count % (password.count('') - 1)])) * ord(nonce)
-        if encrypt:
+        if function == "encrypt":
             encrypted_char = chr(int(ord(i) + offset) % 55000)
-        elif decrypt:
+        elif function == "decrypt":
             encrypted_char = chr(int(ord(i) - offset) % 55000)
         encrypted_message = encrypted_message + encrypted_char
         count += 1
     message = encrypted_message
     if verbose == 2:
         print("Round " + str(rnum) + "-- Phase 1: " + message)
-
-def phase2_crypto():
+    return message
+    
+def phase2_crypto(password, nonce, rnum, message, char, function, verbose):
     """ Phase 2 encrypts every fifth character in the message, starting with the one in
     the position of the round number modulus 5, by shifting it by a number derived from
     the round number, nonce, and the ordinal position of the current round's character
     from the hashed password devided by the length of the password."""
-    global password
-    global nonce
-    global rnum
-    global message
-    global char
     count = 1
     rnonce = rnum * ord(nonce)
     encrypted_message = ""
     for i in message:
         if count % 5 == rnum % 5:
             pass_place = int(ord(char) / len(password))
-            if encrypt:
+            if function == "encrypt":
                 encrypted_char = chr((ord(i) + (pass_place * rnonce)) % 55000)
-            if decrypt:
+            elif function == "decrypt":
                 encrypted_char = chr((ord(i) - (pass_place * rnonce)) % 55000)
             encrypted_message = encrypted_message + encrypted_char
         else:
@@ -119,12 +122,12 @@ def phase2_crypto():
     message = encrypted_message
     if verbose == 2:
         print("Round " + str(rnum) + "-- Phase 2: " + message)
+    return message
 
-def hash_pass():
+def hash_pass(password, keylength, verbose):
     """ The password is hashed to ensure that the resulting hashed password will meet
     the keylength requirements given by the user. This allows the user to have a
     secure password without having to remember it."""
-    global password
     if verbose == 2:
         print("Unhashed password: " + password)
     t1 = len(password) + 2
@@ -141,134 +144,52 @@ def hash_pass():
     if verbose == 2:
         print("Hashed password: " + password)
 
-
-def crypto():
-    """ The purpose of this function is to repeat over every character in the
-    password and execute phase 1 and 2 of the cryptographic function on the
-    message."""
-    global rnum
-    global char
-    rnum = 1
-    for char in password:
-        phase1_crypto()
-        phase2_crypto()
-        if verbose > 0:
-            print((rnum / len(password)) * 100, "% Complete.")
-        rnum += 1
-
-def encrypt_func():
-    """ Performs all of the nessacerry setup and clean up to encrypt a message.
+def crypto_func(function, message, output_file, verbose, password, keylength):
+    """ Performs all of the nessacerry setup and clean up to encrypt or
+    decrypt a message based on the -e or -d arugments.
     Also handles writing to the output file or standard out."""
-    global password
-    global message
-    global input_file
-    global output_file
-    global verbose
-    global nonce
-    global rnum
-    nonce = chr(int(time.time() * 10000000) % 55000)
-    hash_pass()
-    if message:
-        crypto()
-        if output_file:
-            out_file = open(output_file, 'w')
-            out_file.write(str(nonce)+message)
-            out_file.close()
-        else:
-            print("Encrypted Message:")
-            print()
-            print(str(nonce)+message)
-            print()
-        if verbose > 0:
-            print("Encryption complete.")
-    elif input_file:
-        if os.path.isfile(input_file):
-            in_file = open(input_file)
-            message = in_file.read()
-            crypto()
-            if output_file:
-                out_file = open(output_file, 'w')
-                out_file.write(str(nonce)+message)
-                out_file.close()
-            else:
-                print("Encrypted Message:")
-                print()
-                print(str(nonce)+message)
-                print()
-            if verbose > 0:
-                print("Encryption complete.")
-        else:
-            print("No such file as", input_file)
-            exit(1)
-    else:
-        print("You must either enter a message (-m) or specify a input file (-i).")
-        exit(1)
-
-
-def decrypt_func():
-    """ Performs all of the nessacerry setup and clean up to decrypt a message.
-    Also handles writing to the output file or standard out."""
-    global password
-    global message
-    global input_file
-    global output_file
-    global verbose
-    global nonce
-    global rnum
-    hash_pass()
-    if message:
+    if function == "encrypt":
+        nonce = chr(int(time.time() * 10000000) % 55000)
+    elif function == "decrypt":
         nonce = message[0]
         message = message[1:]
-        crypto()
+
+    hash_pass(password, keylength, verbose)
+    if message:
+        rnum = 1
+        for char in password:
+            message = phase1_crypto(password, nonce, rnum, message, function, verbose)
+            message = phase2_crypto(password, nonce, rnum, message, char, function, verbose)
+            if verbose > 0:
+                print((rnum / len(password)) * 100, "% Complete.")
+            rnum += 1
+
+        if function == "encrypt":
+            message = str(nonce)+message
+            operation = "En"
+        elif function == "decrypt":
+            operation = "De"
+            
         if output_file:
             out_file = open(output_file, 'w')
             out_file.write(message)
             out_file.close()
         else:
-            print("Decrypted Message:")
+            print(operation+"crypted Message:")
             print()
             print(message)
             print()
         if verbose > 0:
-            print("Decryption complete.")
-    elif input_file:
-        if os.path.isfile(input_file):
-            in_file = open(input_file)
-            message = in_file.read()
-            nonce = message[0]
-            message = message[1:]
-            in_file.close()
-            crypto()
-            if output_file:
-                out_file = open(output_file, 'w')
-                out_file.write(message)
-                out_file.close()
-            else:
-                print("Decrypted Message:")
-                print()
-                print(message)
-                print()
-            if verbose > 0:
-                print("Decryption complete.")
-        else:
-            print("No such file as", input_file)
-            exit(1)
+            print(operation+"cryption complete.")
     else:
         print("You must either enter a message (-m) or specify a input file (-i).")
         exit(1)
 
-def main():
+
+def main(args):
     """ The primary function for the program, calls the variables function then
     decides whether to call the encrypt or the decrypt function."""
-    variables()
-    global encrypt
-    global decrypt
-    if encrypt:
-        encrypt_func()
-    elif decrypt:
-        decrypt_func()
-    else:
-        print("You must specify if encryption (-e) or decryption (-d) should be used.")
-        exit(1)
+    function, message, output_file, verbose, password, keylength = variables(args)
+    crypto_func(function, message, output_file, verbose, password, keylength)
 
-main()
+main(args)
