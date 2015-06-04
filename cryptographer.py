@@ -79,6 +79,9 @@ def variables(args):
             exit(1)
     elif args.message:
         message = args.message
+    else:
+        print("Enter a message (-m) or specify a input file (-i).")
+        exit(1)
     output_file = args.outputfile
     if args.verbose:
         verbose = args.verbose
@@ -168,36 +171,33 @@ def main(args):
         message = message[1:]
 
     hash_pass(password, keylength, verbose)
-    if message:
-        rnum = 1
-        for char in password:
-            message = phase1_crypto(password, nonce, rnum, message, function,
-                                    verbose)
-            message = phase2_crypto(password, nonce, rnum, message, char,
-                                    function, verbose)
-            if verbose > 0:
-                print((rnum / len(password)) * 100, "% Complete.")
-            rnum += 1
-
-        if function == "encrypt":
-            message = str(nonce)+message
-            operation = "En"
-        elif function == "decrypt":
-            operation = "De"
-
-        if output_file:
-            out_file = open(output_file, 'w')
-            out_file.write(message)
-            out_file.close()
-        else:
-            print(operation+"crypted Message:")
-            print()
-            print(message)
-            print()
+    rnum = 1
+    for char in password:
+        message = phase1_crypto(password, nonce, rnum, message, function,
+                                verbose)
+        message = phase2_crypto(password, nonce, rnum, message, char,
+                                function, verbose)
         if verbose > 0:
-            print(operation+"cryption complete.")
+            print((rnum / len(password)) * 100, "% Complete.")
+        rnum += 1
+
+    if function == "encrypt":
+        message = str(nonce)+message
+        operation = "En"
+    elif function == "decrypt":
+        operation = "De"
+
+    if output_file:
+        out_file = open(output_file, 'w')
+        out_file.write(message)
+        out_file.close()
     else:
-        print("Enter a message (-m) or specify a input file (-i).")
-        exit(1)
+        print(operation+"crypted Message:")
+        print()
+        print(message)
+        print()
+    if verbose > 0:
+        print(operation+"cryption complete.")
+
 
 main(args)
