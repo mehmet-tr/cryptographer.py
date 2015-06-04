@@ -137,7 +137,7 @@ def phase2_crypto(password, nonce, rnum, message, char, function, verbose):
 def hash_pass(password, keylength, verbose):
     """ The password is hashed to ensure that the resulting hashed password
     will meet the keylength requirements given by the user. This allows the
-    user to have a secure password without having to remember it."""
+    user to have a secure key without having to remember a long password."""
     if verbose == 2:
         print("Unhashed password: " + password)
     t1 = len(password) + 2
