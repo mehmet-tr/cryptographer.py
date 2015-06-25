@@ -49,42 +49,42 @@ parser.add_argument('-v', '--verbose', help='-v will print out the progress \
 args = parser.parse_args()
 
 
-def variables(args):
+def variables(arguments):
     """ Defines variables based on command line arguments. Also does some
     input checking on key length variable to ensure it is a integer and
     greater than zero."""
-    if args.encrypt:
+    if arguments.encrypt:
         function = "encrypt"
-    elif args.decrypt:
+    elif arguments.decrypt:
         function = "decrypt"
     else:
         print("You must specify if encryption (-e) or decryption (-d) should\
         be used.")
         exit(1)
-    password = args.password
+    password = arguments.password
     try:
-        keylength = int(args.key)
+        keylength = int(arguments.key)
     except ValueError:
         print("The key length must be an integer.")
         exit(1)
     if keylength < 1:
         print("The key length must be greater than 0")
         exit(1)
-    if args.inputfile:
-        if os.path.isfile(args.inputfile):
-            in_file = open(args.inputfile)
+    if arguments.inputfile:
+        if os.path.isfile(arguments.inputfile):
+            in_file = open(arguments.inputfile)
             message = in_file.read()
         else:
-            print("No such file as", args.inputfile)
+            print("No such file as", arguments.inputfile)
             exit(1)
-    elif args.message:
+    elif arguments.message:
         message = args.message
     else:
         print("Enter a message (-m) or specify a input file (-i).")
         exit(1)
-    output_file = args.outputfile
+    output_file = arguments.outputfile
     if args.verbose:
-        verbose = args.verbose
+        verbose = arguments.verbose
     else:
         verbose = 0
     return function, message, output_file, verbose, password, keylength
@@ -158,12 +158,12 @@ def hash_pass(password, keylength, verbose):
         print("Hashed password: " + password)
 
 
-def main(args):
+def main(arguments):
     """Performs all of the nessacerry setup and clean up to encrypt or
     decrypt a message based on the -e or -d arugments.
     Also handles writing to the output file or standard out."""
     function, message, output_file, verbose, password, keylength = \
-        variables(args)
+        variables(arguments)
     if function == "encrypt":
         nonce = chr(int(time.time() * 10000000) % 55000)
     elif function == "decrypt":
