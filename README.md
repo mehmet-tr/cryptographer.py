@@ -1,7 +1,7 @@
 cryptographer.py
 ================
 
-[![Build Status](https://travis-ci.org/xzovy/cryptographer.py.svg?branch=master)](https://travis-ci.org/xzovy/cryptographer.py)[![Code Health](https://landscape.io/github/xzovy/cryptographer.py/master/landscape.svg?style=plastic)](https://landscape.io/github/xzovy/cryptographer.py/master)
+[![Build Status](https://travis-ci.org/xzovy/cryptographer.py.svg?branch=master)](https://travis-ci.org/xzovy/cryptographer.py) [![Code Health](https://landscape.io/github/xzovy/cryptographer.py/master/landscape.svg?style=plastic)](https://landscape.io/github/xzovy/cryptographer.py/master)
 
 ### What is cryptographer.py?
 
