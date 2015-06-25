@@ -1,7 +1,6 @@
 language: python
 python:
-  - "3.3"
-  - "3.4"
+  - "3"
 script: 
   - python3 cryptographer.py -e -p pass -k 10 -i test -o test.encrypted
   - test $(md5sum test| cut -f 1 -d ' ') != $(md5sum test.encrypted | cut -f 1 -d ' ')
