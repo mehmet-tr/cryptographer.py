@@ -28,6 +28,12 @@ One bitcoin will be paid out to whom so ever can responsibly disclose a method b
 bounty.encrypt can be decrypted without knowledge of the password or key length and within a
 reasonable time frame on a modern computer (or cluster of computers).  
 
+### Disclaimer:
+
+Along with the NO WARRENTY disclaimer explictly laided out in the GPL license, this software
+has not been independantly reviewed and should NOT be used for any application in which
+strong encryption is required.
+
 ### Installation:
 
 No installation is required to run cryptographer.py. Simply give the file execute privileges
