@@ -94,17 +94,15 @@ def phase1_crypto(password, nonce, rnum, message, function, verbose):
     """ Phase 1 encrypts every character in the message by shifting it through
     the UTF-8 alphabet by a number derived from the character of the hashed
     password for the current round and the nonce."""
-    count = 1
     encrypted_message = ""
-    for i in message:
-        offset = int(ord(password[count % (password.count('') - 1)])) * \
+    for index, letter in enumerate(message):
+        offset = int(ord(password[index % (password.index('') - 1)])) * \
                  ord(nonce)
         if function == "encrypt":
-            encrypted_char = chr(int(ord(i) + offset) % 55000)
+            encrypted_char = chr(int(ord(letter) + offset) % 55000)
         elif function == "decrypt":
-            encrypted_char = chr(int(ord(i) - offset) % 55000)
+            encrypted_char = chr(int(ord(letter) - offset) % 55000)
         encrypted_message = encrypted_message + encrypted_char
-        count += 1
     message = encrypted_message
     if verbose == 2:
         print("Round " + str(rnum) + "-- Phase 1: " + message)
@@ -117,20 +115,18 @@ def phase2_crypto(password, nonce, rnum, message, char, function, verbose):
     a number derived from the round number, nonce, and the ordinal position of
     the current round's character from the hashed password devided by the
     length of the password."""
-    count = 1
     rnonce = rnum * ord(nonce)
     encrypted_message = ""
-    for i in message:
-        if count % 5 == rnum % 5:
+    for index, letter in enumerate(message):
+        if index % 5 == rnum % 5:
             pass_place = int(ord(char) / len(password))
             if function == "encrypt":
-                encrypted_char = chr((ord(i) + (pass_place * rnonce)) % 55000)
+                encrypted_char = chr((ord(letter) + (pass_place * rnonce)) % 55000)
             elif function == "decrypt":
-                encrypted_char = chr((ord(i) - (pass_place * rnonce)) % 55000)
+                encrypted_char = chr((ord(letter) - (pass_place * rnonce)) % 55000)
             encrypted_message = encrypted_message + encrypted_char
         else:
-            encrypted_message = encrypted_message + i
-        count += 1
+            encrypted_message = encrypted_message + letter
     message = encrypted_message
     if verbose == 2:
         print("Round " + str(rnum) + "-- Phase 2: " + message)
@@ -171,15 +167,13 @@ def main(arguments):
         message = message[1:]
 
     hash_pass(password, keylength, verbose)
-    rnum = 1
-    for char in password:
+    for rnum, char in enumerate(password):
         message = phase1_crypto(password, nonce, rnum, message, function,
                                 verbose)
         message = phase2_crypto(password, nonce, rnum, message, char,
                                 function, verbose)
         if verbose > 0:
             print((rnum / len(password)) * 100, "% Complete.")
-        rnum += 1
 
     if function == "encrypt":
         message = str(nonce)+message
