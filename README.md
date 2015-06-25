@@ -30,8 +30,8 @@ reasonable time frame on a modern computer (or cluster of computers).
 
 ### Disclaimer:
 
-Along with the NO WARRENTY disclaimer explictly laided out in the GPL license, this software
-has not been independantly reviewed and should NOT be used for any application in which
+Along with the NO WARRENTY disclaimer explictly laided out in the GPL, this software
+has not been independantly reviewed and should NOT be used for any application for which
 strong encryption is required.
 
 ### Installation:
