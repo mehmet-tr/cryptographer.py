@@ -22,6 +22,12 @@ Decryption works the same way but in reverse.
 
 See accompanying LICENSE file for the full license.
 
+### Bounty:
+
+One bitcoin will be paid out to whom so ever can responsibly disclose a method by which the 
+bounty.encrypt can be decrypted without knowledge of the password or key length and within a
+reasonable time frame on a modern computer (or cluster of computers).  
+
 ### Installation:
 
 No installation is required to run cryptographer.py. Simply give the file execute privileges
