@@ -1,6 +1,8 @@
 cryptographer.py
 ================
 
+[![Join the chat at https://gitter.im/xzovy/cryptographer.py](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/xzovy/cryptographer.py?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/xzovy/cryptographer.py.svg?branch=master)](https://travis-ci.org/xzovy/cryptographer.py) [![Code Health](https://landscape.io/github/xzovy/cryptographer.py/master/landscape.svg?style=flat)](https://landscape.io/github/xzovy/cryptographer.py/master)
 
 ### What is cryptographer.py?
