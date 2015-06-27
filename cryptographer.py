@@ -141,6 +141,9 @@ def main(arguments):
     Also handles writing to the output file or standard out."""
     function, message, output_file, verbose, password, keylength = \
         variables(arguments)
+
+    libcryptographer.set_verbosity(verbose)
+    
     if function == "encrypt":
         nonce = libcryptographer.generate_nonce()
     elif function == "decrypt":
