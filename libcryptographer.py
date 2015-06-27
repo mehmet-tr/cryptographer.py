@@ -30,3 +30,44 @@ def hash_pass(password, keylength):
     if verbose == 2:
         print("Hashed password: " + password)
     return password
+
+def phase1_crypto(password, nonce, rnum, message, function):
+    """ Phase 1 encrypts every character in the message by shifting it through
+    the UTF-8 alphabet by a number derived from the character of the hashed
+    password for the current round and the nonce."""
+    encrypted_message = ""
+    for index, letter in enumerate(message):
+        offset = int(ord(password[index % (password.index('') - 1)])) * \
+                 ord(nonce)
+        if function == "encrypt":
+            encrypted_char = chr(int(ord(letter) + offset) % 55000)
+        elif function == "decrypt":
+            encrypted_char = chr(int(ord(letter) - offset) % 55000)
+        encrypted_message = encrypted_message + encrypted_char
+    message = encrypted_message
+    if verbose == 2:
+        print("Round " + str(rnum) + "-- Phase 1: " + message)
+    return message
+
+def phase2_crypto(password, nonce, rnum, message, char, function):
+    """ Phase 2 encrypts every fifth character in the message, starting with
+    the one in the position of the round number modulus 5, by shifting it by
+    a number derived from the round number, nonce, and the ordinal position of
+    the current round's character from the hashed password devided by the
+    length of the password."""
+    rnonce = rnum * ord(nonce)
+    encrypted_message = ""
+    for index, letter in enumerate(message):
+        if index % 5 == rnum % 5:
+            pass_place = int(ord(char) / len(password))
+            if function == "encrypt":
+                encrypted_char = chr((ord(letter) + (pass_place * rnonce)) % 55000)
+            elif function == "decrypt":
+                encrypted_char = chr((ord(letter) - (pass_place * rnonce)) % 55000)
+            encrypted_message = encrypted_message + encrypted_char
+        else:
+            encrypted_message = encrypted_message + letter
+    message = encrypted_message
+    if verbose == 2:
+        print("Round " + str(rnum) + "-- Phase 2: " + message)
+    return message
