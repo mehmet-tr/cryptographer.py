@@ -85,7 +85,7 @@ def variables(arguments):
         exit(1)
     output_file = arguments.outputfile
     if args.verbose:
-        verbose = arguments.verbose
+        verbose = int(arguments.verbose)
     else:
         verbose = 0
     return function, message, output_file, verbose, password, keylength
@@ -97,22 +97,19 @@ def main(arguments):
     function, message, output_file, verbose, password, keylength = \
         variables(arguments)
 
-    libcryptographer.set_verbosity(verbose)
+    crypt = libcryptographer.LibCryptographer()
+    crypt.set_verbosity(verbose)
+    crypt.set_function(function)
     
     if function == "encrypt":
-        nonce = libcryptographer.generate_nonce()
+        nonce = crypt.generate_nonce()
     elif function == "decrypt":
         nonce = message[0]
         message = message[1:]
 
-    password = libcryptographer.hash_pass(password, keylength)
-    for rnum, char in enumerate(password):
-        message = libcryptographer.phase1_crypto(password, nonce, rnum, message, function)
-        message = libcryptographer.phase2_crypto(password, nonce, rnum, message, char,
-                                function)
-        if verbose > 0:
-            print((rnum / len(password)) * 100, "% Complete.")
-
+    crypt.hash_pass(password, keylength)
+    message = crypt.perform_rounds(nonce, message, function)
+    
     if function == "encrypt":
         message = str(nonce)+message
         operation = "En"
