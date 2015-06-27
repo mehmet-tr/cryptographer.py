@@ -17,8 +17,9 @@ cryptographer.py (-e|-d) -p PASSWORD -k KEYLENGTH (-m MESSAGE | -i INPUTFILE) \
 """
 
 import os
-import time
 import argparse
+
+import libcryptographer
 
 parser = argparse.ArgumentParser()
 action = parser.add_mutually_exclusive_group(required=True)
@@ -133,26 +134,6 @@ def phase2_crypto(password, nonce, rnum, message, char, function, verbose):
     return message
 
 
-def hash_pass(password, keylength, verbose):
-    """ The password is hashed to ensure that the resulting hashed password
-    will meet the keylength requirements given by the user. This allows the
-    user to have a secure key without having to remember a long password."""
-    if verbose == 2:
-        print("Unhashed password: " + password)
-    t1 = len(password) + 2
-    while len(str(t1)) < (int(keylength) * 4):
-        for i in password:
-            t1 = t1 * ((len(password) + 2) ** ord(i))
-    p = ""
-    for i in zip(*[iter(str(t1))] * 3):
-        n0 = int(i[0]) + 2
-        n1 = int(i[1]) + 2
-        n2 = int(i[2]) + 2
-        p = p + chr(((n0 ** n1) ** n2) % 55000 + 48)
-    password = p[:int(keylength)]
-    if verbose == 2:
-        print("Hashed password: " + password)
-
 
 def main(arguments):
     """Performs all of the nessacerry setup and clean up to encrypt or
@@ -161,12 +142,12 @@ def main(arguments):
     function, message, output_file, verbose, password, keylength = \
         variables(arguments)
     if function == "encrypt":
-        nonce = chr(int(time.time() * 10000000) % 55000)
+        nonce = libcryptographer.generate_nonce()
     elif function == "decrypt":
         nonce = message[0]
         message = message[1:]
 
-    hash_pass(password, keylength, verbose)
+    password = libcryptographer.hash_pass(password, keylength)
     for rnum, char in enumerate(password):
         message = phase1_crypto(password, nonce, rnum, message, function,
                                 verbose)
