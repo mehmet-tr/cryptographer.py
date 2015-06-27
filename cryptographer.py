@@ -17,8 +17,9 @@ cryptographer.py (-e|-d) -p PASSWORD -k KEYLENGTH (-m MESSAGE | -i INPUTFILE) \
 """
 
 import os
-import time
 import argparse
+
+import libcryptographer
 
 parser = argparse.ArgumentParser()
 action = parser.add_mutually_exclusive_group(required=True)
@@ -84,75 +85,10 @@ def variables(arguments):
         exit(1)
     output_file = arguments.outputfile
     if args.verbose:
-        verbose = arguments.verbose
+        verbose = int(arguments.verbose)
     else:
         verbose = 0
     return function, message, output_file, verbose, password, keylength
-
-
-def phase1_crypto(password, nonce, rnum, message, function, verbose):
-    """ Phase 1 encrypts every character in the message by shifting it through
-    the UTF-8 alphabet by a number derived from the character of the hashed
-    password for the current round and the nonce."""
-    encrypted_message = ""
-    for index, letter in enumerate(message):
-        offset = int(ord(password[index % (password.index('') - 1)])) * \
-                 ord(nonce)
-        if function == "encrypt":
-            encrypted_char = chr(int(ord(letter) + offset) % 55000)
-        elif function == "decrypt":
-            encrypted_char = chr(int(ord(letter) - offset) % 55000)
-        encrypted_message = encrypted_message + encrypted_char
-    message = encrypted_message
-    if verbose == 2:
-        print("Round " + str(rnum) + "-- Phase 1: " + message)
-    return message
-
-
-def phase2_crypto(password, nonce, rnum, message, char, function, verbose):
-    """ Phase 2 encrypts every fifth character in the message, starting with
-    the one in the position of the round number modulus 5, by shifting it by
-    a number derived from the round number, nonce, and the ordinal position of
-    the current round's character from the hashed password devided by the
-    length of the password."""
-    rnonce = rnum * ord(nonce)
-    encrypted_message = ""
-    for index, letter in enumerate(message):
-        if index % 5 == rnum % 5:
-            pass_place = int(ord(char) / len(password))
-            if function == "encrypt":
-                encrypted_char = chr((ord(letter) + (pass_place * rnonce)) % 55000)
-            elif function == "decrypt":
-                encrypted_char = chr((ord(letter) - (pass_place * rnonce)) % 55000)
-            encrypted_message = encrypted_message + encrypted_char
-        else:
-            encrypted_message = encrypted_message + letter
-    message = encrypted_message
-    if verbose == 2:
-        print("Round " + str(rnum) + "-- Phase 2: " + message)
-    return message
-
-
-def hash_pass(password, keylength, verbose):
-    """ The password is hashed to ensure that the resulting hashed password
-    will meet the keylength requirements given by the user. This allows the
-    user to have a secure key without having to remember a long password."""
-    if verbose == 2:
-        print("Unhashed password: " + password)
-    t1 = len(password) + 2
-    while len(str(t1)) < (int(keylength) * 4):
-        for i in password:
-            t1 = t1 * ((len(password) + 2) ** ord(i))
-    p = ""
-    for i in zip(*[iter(str(t1))] * 3):
-        n0 = int(i[0]) + 2
-        n1 = int(i[1]) + 2
-        n2 = int(i[2]) + 2
-        p = p + chr(((n0 ** n1) ** n2) % 55000 + 48)
-    password = p[:int(keylength)]
-    if verbose == 2:
-        print("Hashed password: " + password)
-
 
 def main(arguments):
     """Performs all of the nessacerry setup and clean up to encrypt or
@@ -160,21 +96,20 @@ def main(arguments):
     Also handles writing to the output file or standard out."""
     function, message, output_file, verbose, password, keylength = \
         variables(arguments)
+
+    crypt = libcryptographer.LibCryptographer()
+    crypt.set_verbosity(verbose)
+    crypt.set_function(function)
+    
     if function == "encrypt":
-        nonce = chr(int(time.time() * 10000000) % 55000)
+        nonce = crypt.generate_nonce()
     elif function == "decrypt":
         nonce = message[0]
         message = message[1:]
 
-    hash_pass(password, keylength, verbose)
-    for rnum, char in enumerate(password):
-        message = phase1_crypto(password, nonce, rnum, message, function,
-                                verbose)
-        message = phase2_crypto(password, nonce, rnum, message, char,
-                                function, verbose)
-        if verbose > 0:
-            print((rnum / len(password)) * 100, "% Complete.")
-
+    crypt.hash_pass(password, keylength)
+    message = crypt.perform_rounds(nonce, message, function)
+    
     if function == "encrypt":
         message = str(nonce)+message
         operation = "En"
