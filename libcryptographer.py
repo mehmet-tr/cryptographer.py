@@ -5,20 +5,24 @@ class LibCryptographer(object):
     function = "encrypt"
     
     def set_verbosity(this, v):
+
         """ Set the verbosity level. 0 is none, 2 is highest and 
         will print out the most debug information """
         this.verbose = v
 
     def set_function(this, f):
+
         """ Set whether we should operate in encrypt or decrypt mode. 
         Encrypt is the default. """
         this.function = f
         
     def generate_nonce(this):
+
         """ Uses the current time to generate a unique nonce """
         return chr(int(time.time() * 10000000) % 55000)
     
     def hash_pass(this, password, keylength):
+
         """ The password is hashed to ensure that the resulting hashed password
         will meet the keylength requirements given by the user. This allows the
         user to have a secure key without having to remember a long password."""
@@ -41,6 +45,7 @@ class LibCryptographer(object):
         return password
 
     def phase1_crypto(this, nonce, rnum, message, function):
+
         """ Phase 1 encrypts every character in the message by shifting it  
         through the UTF-8 alphabet by a number derived from the character of 
         the hashed password for the current round and the nonce."""
@@ -59,6 +64,7 @@ class LibCryptographer(object):
         return message
 
     def phase2_crypto(this, nonce, rnum, message, char, function):
+
         """ Phase 2 encrypts every fifth character in the message, starting with
         the one in the position of the round number modulus 5, by shifting it by
         a number derived from the round number, nonce, and the ordinal position 
@@ -84,6 +90,7 @@ class LibCryptographer(object):
         return message
 
     def perform_rounds(this, nonce, message, function):
+
         """ This is the core encryption/decryption algorithm, it performs a 
         series of rounds of the phase1 and phase2 functions to encypher the 
         text. """

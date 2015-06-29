@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 """
 Title: cryptographer.py
 Author: Caleb Cooper
@@ -51,6 +52,7 @@ args = parser.parse_args()
 
 
 def variables(arguments):
+
     """ Defines variables based on command line arguments. Also does some
     input checking on key length variable to ensure it is a integer and
     greater than zero."""
@@ -91,6 +93,7 @@ def variables(arguments):
     return function, message, output_file, verbose, password, keylength
 
 def main(arguments):
+
     """Performs all of the nessacerry setup and clean up to encrypt or
     decrypt a message based on the -e or -d arugments.
     Also handles writing to the output file or standard out."""
