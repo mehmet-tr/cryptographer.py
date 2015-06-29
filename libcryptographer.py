@@ -5,11 +5,13 @@ class LibCryptographer(object):
     function = "encrypt"
     
     def set_verbosity(this, v):
-        """ Set the verbosity level. 0 is none, 2 is highest and will print out the most debug information """
+        """ Set the verbosity level. 0 is none, 2 is highest and 
+        will print out the most debug information """
         this.verbose = v
 
     def set_function(this, f):
-        """ Set whether we should operate in encrypt or decrypt mode. encrypt is the default. """
+        """ Set whether we should operate in encrypt or decrypt mode. 
+        Encrypt is the default. """
         this.function = f
         
     def generate_nonce(this):
@@ -39,12 +41,13 @@ class LibCryptographer(object):
         return password
 
     def phase1_crypto(this, nonce, rnum, message, function):
-        """ Phase 1 encrypts every character in the message by shifting it through
-        the UTF-8 alphabet by a number derived from the character of the hashed
-        password for the current round and the nonce."""
+        """ Phase 1 encrypts every character in the message by shifting it  
+        through the UTF-8 alphabet by a number derived from the character of 
+        the hashed password for the current round and the nonce."""
         encrypted_message = ""
         for index, letter in enumerate(message):
-            offset = int(ord(this.password[index % (this.password.index('') - 1)])) * ord(nonce)
+            offset = int(ord(this.password[index % \
+                     (this.password.index('') - 1)])) * ord(nonce)
             if function == "encrypt":
                 encrypted_char = chr(int(ord(letter) + offset) % 55000)
             elif function == "decrypt":
@@ -58,18 +61,20 @@ class LibCryptographer(object):
     def phase2_crypto(this, nonce, rnum, message, char, function):
         """ Phase 2 encrypts every fifth character in the message, starting with
         the one in the position of the round number modulus 5, by shifting it by
-        a number derived from the round number, nonce, and the ordinal position of
-        the current round's character from the hashed password devided by the
-        length of the password."""
+        a number derived from the round number, nonce, and the ordinal position 
+        of the current round's character from the hashed password devided by 
+        the length of the password."""
         rnonce = rnum * ord(nonce)
         encrypted_message = ""
         for index, letter in enumerate(message):
             if index % 5 == rnum % 5:
                 pass_place = int(ord(char) / len(this.password))
                 if function == "encrypt":
-                    encrypted_char = chr((ord(letter) + (pass_place * rnonce)) % 55000)
+                    encrypted_char = chr((ord(letter) \
+                                     + (pass_place * rnonce)) % 55000)
                 elif function == "decrypt":
-                    encrypted_char = chr((ord(letter) - (pass_place * rnonce)) % 55000)
+                    encrypted_char = chr((ord(letter) \
+                                     - (pass_place * rnonce)) % 55000)
                 encrypted_message = encrypted_message + encrypted_char
             else:
                 encrypted_message = encrypted_message + letter
@@ -79,7 +84,9 @@ class LibCryptographer(object):
         return message
 
     def perform_rounds(this, nonce, message, function):
-        """ This is the core encryption/decryption algorithm, it performs a series of rounds of the phase1 and phase2 functions to encypher the text. """
+        """ This is the core encryption/decryption algorithm, it performs a 
+        series of rounds of the phase1 and phase2 functions to encypher the 
+        text. """
         for rnum, char in enumerate(this.password):
             message = this.phase1_crypto(nonce, rnum, message, function)
             message = this.phase2_crypto(nonce, rnum, message, char, function)
