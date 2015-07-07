@@ -71,7 +71,7 @@ Returns the now hashed password.
         return password
 ```
 
-__Phase1_Crypt__
+__Phase1_Crypt__ <br \>
 Phase 1 encrypts every character in the message by shifting it through the UTF-8 alphabet by a number derived from the character of the hashed password for the current round and the nonce.
 ```python
     def phase1_crypto(this, nonce, rnum, message, function):
@@ -90,7 +90,7 @@ Phase 1 encrypts every character in the message by shifting it through the UTF-8
         return message
 ```
 
-__Phase2_Crypto__
+__Phase2_Crypto__ <br \>
 Phase 2 encrypts every fifth character in the message, starting with the one in the position of the round number modulus 5, by shifting it by a number derived from the round number, nonce, and the ordinal position of the current round's character from the hashed password divided by the length of the password.
 ```python
     def phase2_crypto(this, nonce, rnum, message, char, function):
@@ -114,7 +114,7 @@ Phase 2 encrypts every fifth character in the message, starting with the one in 
         return message
 ```
 
-__Perform_Rounds__
+__Perform_Rounds__ <br \>
 This is the core encryption/decryption algorithm, it performs a series of rounds of the phase1 and phase2 functions to encipher the text.
 ```python
     def perform_rounds(this, nonce, message, function):
