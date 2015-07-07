@@ -1,27 +1,29 @@
-#!/usr/bin/env python3
+#[cryptographer.py](#cryptographer.py "save:")
 
-"""
-Title: cryptographer.py
-Author: Caleb Cooper
-License: GPLv2
-Version: 1.1
-Version Date: 2014-01-31
-Description: This program performs a two phase cryptographic function
-             upon a supplied message, either inline or from a file.
-             This function is repeated for a number of rounds determined
-             by the length of a password supplied by the user. Once all
-             of the rounds are complete, the encrypted/decrypted message
-             can either be printed to standard out or written to a file.
-Usage:
-cryptographer.py (-e|-d) -p PASSWORD -k KEYLENGTH (-m MESSAGE | -i INPUTFILE) \
+__Description__ <br \>
+This program performs a two phase cryptographic function upon a supplied message, either inline or from a file. This function is repeated for a number of rounds determined by the length of a password supplied by the user. Once all of the rounds are complete, the encrypted/decrypted message can either be printed to standard out or written to a file.
+
+__Usage__ <br \>
+cryptographer.py (-e|-d) -p PASSWORD -k KEYLENGTH (-m MESSAGE | -i INPUTFILE)
 [-o OUTPUTFILE] [-v | -vv]
-"""
 
+
+__Interpreter__ <br \>
+cryptograper.py requires python3 to properly handle unicode. For that reason python3 is specifically called in the interpreter line.
+
+```python
+#!/usr/bin/env python3
+```
+
+__Imports__
+```python
 import os
 import argparse
-
 import libcryptographer
+```
 
+__Arguments__
+```python
 parser = argparse.ArgumentParser()
 action = parser.add_mutually_exclusive_group(required=True)
 action.add_argument('-e', '--encrypt', help='For encrypting a file/message.',
@@ -49,8 +51,10 @@ parser.add_argument('-v', '--verbose', help='-v will print out the progress \
                     the message at every stage of the encryption/decryption \
                     process.', action='count')
 args = parser.parse_args()
+```
 
-
+__Variables__
+```python
 def variables(arguments):
 
     """ Defines variables based on command line arguments. Also does some
@@ -91,7 +95,10 @@ def variables(arguments):
     else:
         verbose = 0
     return function, message, output_file, verbose, password, keylength
+```
 
+__Main__
+```python
 def main(arguments):
 
     """Performs all of the nessacerry setup and clean up to encrypt or
@@ -130,6 +137,9 @@ def main(arguments):
         print()
     if verbose > 0:
         print(operation+"cryption complete.")
+```
 
-
+__Start__
+```python
 main(args)
+```
