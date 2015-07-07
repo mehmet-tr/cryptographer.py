@@ -54,9 +54,9 @@ Convert the numeric_key integer into a str then break it into sets of three to b
 ```python
         hashed_pass = ""
         for three_set in zip(*[iter(str(numeric_key))] * 3):
-            n0 = int(i[0]) + 2
-            n1 = int(i[1]) + 2
-            n2 = int(i[2]) + 2
+            n0 = int(three_set[0]) + 2
+            n1 = int(three_set[1]) + 2
+            n2 = int(three_set[2]) + 2
             hashed_pass = hashed_pass + chr(((n0 ** n1) ** n2) % 55000 + 48)
 ```
 Truncates the hashed_pass to the length of the keylength variable assigned by the user.
@@ -68,7 +68,7 @@ Returns the now hashed password.
         if this.verbose == 2:
             print("Hashed password: " + password)
         this.password = password
-        return passwor
+        return password
 ```
 
 __Phase1_Crypt__
