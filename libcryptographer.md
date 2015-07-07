@@ -24,17 +24,44 @@ class LibCryptographer(object):
         user to have a secure key without having to remember a long password."""
         if this.verbose == 2:
             print("Unhashed password: " + password)
-        t1 = len(password) + 2
-        while len(str(t1)) < (int(keylength) * 4):
-            for i in password:
-                t1 = t1 * ((len(password) + 2) ** ord(i))
-        p = ""
-        for i in zip(*[iter(str(t1))] * 3):
+        print(password) #Debug
+
+        """" Creates a numeric_key with the value of the length of the password
+        plus two."""
+        numeric_key = len(password) + 2
+        print(numeric_key) #Debug
+
+        """ While the length of the numeric key is smaller than the integer
+        value of the keylength flag set by the user, iterate over the password
+        to use the ordinal values of each character, along with the current
+        numeric_key and the length of the password, to increase the value
+        of the numeric_key."""
+        while len(str(numeric_key)) < (int(keylength)):
+            for place in password:
+                numeric_key = numeric_key * ((len(password) + 2) ** ord(place))
+                print(t1) #Debug
+
+        """ Convert the numeric_key integer into a str then break it into sets
+        of three to be interated over to create three integers, the first of
+        which is raised by the power of the second, then the product of that
+        is raised by the power of the third. The product of that operation is
+        modulo by 55000 to keep it within the Unicode range then increased by 48
+        avoid the special characters at the beginning of the alphabet. The
+        resulting character is appended to the hashed_pass variable."""
+        hashed_pass = ""
+        for three_set in zip(*[iter(str(numeric_key))] * 3):
+            print(i) #Debug
             n0 = int(i[0]) + 2
+            print(n0) #Debug
             n1 = int(i[1]) + 2
+            print(n1) #Debug
             n2 = int(i[2]) + 2
-            p = p + chr(((n0 ** n1) ** n2) % 55000 + 48)
-        password = p[:int(keylength)]
+            print(n0) #Debug
+            hashed_pass = hashed_pass + chr(((n0 ** n1) ** n2) % 55000 + 48)
+            print(p) #Debug
+        """ Truncates the hashed_pass 
+        password = hashed_pass[:int(keylength)]
+        print(password) #Debug
         if this.verbose == 2:
             print("Hashed password: " + password)
         this.password = password
