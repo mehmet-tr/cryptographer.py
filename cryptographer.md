@@ -4,8 +4,7 @@ __Description__ <br \>
 This program performs a two phase cryptographic function upon a supplied message, either inline or from a file. This function is repeated for a number of rounds determined by the length of a password supplied by the user. Once all of the rounds are complete, the encrypted/decrypted message can either be printed to standard out or written to a file.
 
 __Usage__ <br \>
-cryptographer.py (-e|-d) -p PASSWORD -k KEYLENGTH (-m MESSAGE | -i INPUTFILE)
-[-o OUTPUTFILE] [-v | -vv]
+cryptographer.py (-e|-d) -p PASSWORD -k KEYLENGTH (-m MESSAGE | -i INPUTFILE) [-o OUTPUTFILE] [-v | -vv]
 
 
 __Interpreter__ <br \>

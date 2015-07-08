@@ -74,7 +74,8 @@ Returns the now hashed password.
 ```
 
 __Phase1__ <br \>
-Phase 1 encrypts every character in the message by shifting it through the UTF-8 alphabet by a number derived from the character of the hashed password for the current round and the nonce.
+Phase 1 encrypts every character in the message by shifting it through the UTF-8 alphabet by a number derived from modulus of the product of the ordinal place of the character of the hashed password which corresponds to the location of the letter being encrypted (when the password is repeated to be as long as the text) and product of the nonce multiplied by the round number with the Unicode character set.
+
 ```python
     def phase1(this, password, nonce, rnum, message, decrypt=False):
         rnonce = rnum * ord(nonce)
@@ -93,6 +94,51 @@ Phase 1 encrypts every character in the message by shifting it through the UTF-8
             print("Round " + str(rnum) + "-- Phase 1: " + message)
         return message
 ```
+A simplified example, using only the ASCII character set rather than the entire Unicode character set) of this operation for a plain text of "This is an example", a password of "mfkghhsndel", and a nonce of 5 (for this example we will assume this is the first round, therefore the round number is 1. This makes the rnonce (product of the round number and the nonce) still 5) would work as follows:
+
+Repeat the password so that it is as long as the text. 
+
+|T|h|i|s| |i|s| |a|n| |e|x|a|m|p|l|e|
+|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
+|m|f|k|g|h|h|s|n|d|e|l|m|f|k|g|h|h|s|
+
+Then find the numeric values of each character in the password.
+
+|m|f|k|g|h|h|s|n|d|e|l|m|f|k|g|h|h|s|
+|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
+|109|102|107|103|104|104|115|110|100|101|108|109|102|107|103|104|104|115|
+
+Now multiply the numeric value of each letter in the text length password by the nonce (in this case, 5).
+
+|109|102|107|103|104|104|115|110|100|101|108|109|102|107|103|104|104|115|
+|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
+|545|510|535|515|520|520|575|550|500|505|540|545|510|535|515|520|520|575|
+
+Now find the numeric values of the letters in the plain text.
+
+|T|h|i|s| |i|s| |a|n| |e|x|a|m|p|l|e|
+|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
+|84|104|105|115|32|105|115|32|97|110|32|101|120|97|109|112|108|101|
+
+Now add the product of the numeric values of the characters in the password and the nonce with the numeric values of the characters in the plain text.
+
+|545|510|535|515|520|520|575|550|500|505|540|545|510|535|515|520|520|575|
+|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
+|84|104|105|115|32|105|115|32|97|110|32|101|120|97|109|112|108|101|
+|629|614|640|630|552|625|690|582|597|615|572|646|630|632|624|632|628|676|
+
+Then modulo the sum by size of the ASCII character set (255) to get numeric values without the ASCII range.
+
+|629|614|640|630|552|625|690|582|597|615|572|646|630|632|624|632|628|676|
+|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
+|119|104|130|120|42|115|180|72|87|105|62|136|120|122|114|122|118|166|
+
+Finally, convert these numeric values back into ASCII characters.
+
+|119|104|130|120|42|115|180|72|87|105|62|136|120|122|114|122|118|166|
+|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
+|w|h|,|x|*|s|�|H|W|i|>|^|x|z|r|z|v|�|
+
 
 __Phase2__ <br \>
 Phase 2 encrypts every fifth character in the message, starting with the one in the position of the round number modulus 5, by shifting it by a number derived from the round number, nonce, and the ordinal position of the current round's character from the hashed password divided by the length of the password.
