@@ -1,9 +1,29 @@
-#!/usr/bin/env python3
+#[cryptographer.py](#cryptographer.py "save:")
 
+__Description__ <br \>
+This program performs a two phase cryptographic function upon a supplied message, either inline or from a file. This function is repeated for a number of rounds determined by the length of a password supplied by the user. Once all of the rounds are complete, the encrypted/decrypted message can either be printed to standard out or written to a file.
+
+__Usage__ <br \>
+cryptographer.py (-e|-d) -p PASSWORD -k KEYLENGTH (-m MESSAGE | -i INPUTFILE)
+[-o OUTPUTFILE] [-v | -vv]
+
+
+__Interpreter__ <br \>
+cryptograper.py requires python3 to properly handle unicode. For that reason python3 is specifically called in the interpreter line.
+
+```python
+#!/usr/bin/env python3
+```
+
+__Imports__
+```python
 import os
 import argparse
 import libcryptographer
+```
 
+__Arguments__
+```python
 parser = argparse.ArgumentParser()
 action = parser.add_mutually_exclusive_group(required=True)
 action.add_argument('-e', '--encrypt', help='For encrypting a file/message.',
@@ -31,7 +51,11 @@ parser.add_argument('-v', '--verbose', help='-v will print out the progress \
                     the message at every stage of the encryption/decryption \
                     process.', action='count')
 args = parser.parse_args()
+```
 
+__Variables__ <br \>
+Defines variables based on command line arguments. Also does some input checking on key length variable to ensure it is a integer and greater than zero.
+```python
 def variables(arguments):
     if arguments.encrypt:
         function = "encrypt"
@@ -68,8 +92,11 @@ def variables(arguments):
     else:
         verbose = 0
     return function, message, output_file, verbose, password, keylength
+```
 
-
+__Main__ <br \>
+Performs all of the necessary setup and clean up to encrypt or decrypt a message based on the -e or -d arguments. Also handles writing to the output file or standard out.
+```python
 def main(arguments):
     function, message, output_file, verbose, password, keylength = \
         variables(arguments)
@@ -104,5 +131,9 @@ def main(arguments):
         print()
     if verbose > 0:
         print(operation+"cryption complete.")
+```
 
+__Start__
+```python
 main(args)
+```
