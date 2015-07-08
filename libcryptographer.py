@@ -66,6 +66,9 @@ class LibCryptographer(object):
         return ''.join(char if i % encrypt_idx
                       else translate(char)
                       for i, char in enumerate(message, start_char))
+        if this.verbose == 2:
+              print("Round " + str(rnum) + "-- Phase 2: " + message)
+        return message
 
     def perform_rounds(this, nonce, message, function):
         for rnum, char in enumerate(this.password):
