@@ -52,7 +52,7 @@ While the length of the numeric key is smaller than the integer value of the key
             for place in password:
                 numeric_key = numeric_key * ((len(password) + 2) ** ord(place))
 ```
-Convert the numeric_key integer into a str then break it into sets of three to be iterated over to create three integers, the first of which is raised by the power of the second, then the product of that is raised by the power of the third. The product of that operation is modulo by 55000 to keep it within the Unicode range then increased by 48 avoid the special characters at the beginning of the alphabet. The resulting character is appended to the hashed_pass variable.
+Convert the numeric_key integer into a str then break it into sets of three to be iterated over to create three integers, the first of which is raised by the power of the second, then the product of that is raised by the power of the third. The product of that operation is modulo by the size of the unicode alphabet (65535) to keep it within the Unicode range then increased by 48 avoid the special characters at the beginning of the alphabet. The resulting character is appended to the hashed_pass variable.
 ```python
         hashed_pass = ""
         for three_set in zip(*[iter(str(numeric_key))] * 3):
