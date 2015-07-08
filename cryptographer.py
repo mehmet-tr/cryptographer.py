@@ -92,6 +92,7 @@ def variables(arguments):
         verbose = 0
     return function, message, output_file, verbose, password, keylength
 
+
 def main(arguments):
 
     """Performs all of the nessacerry setup and clean up to encrypt or
@@ -103,7 +104,7 @@ def main(arguments):
     crypt = libcryptographer.LibCryptographer()
     crypt.set_verbosity(verbose)
     crypt.set_function(function)
-    
+
     if function == "encrypt":
         nonce = crypt.generate_nonce()
     elif function == "decrypt":
@@ -112,7 +113,7 @@ def main(arguments):
 
     crypt.hash_pass(password, keylength)
     message = crypt.perform_rounds(nonce, message, function)
-    
+
     if function == "encrypt":
         message = str(nonce)+message
         operation = "En"
