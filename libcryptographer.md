@@ -73,26 +73,28 @@ Returns the now hashed password.
         return password
 ```
 
-__Phase1_Crypt__ <br \>
+__Phase1__ <br \>
 Phase 1 encrypts every character in the message by shifting it through the UTF-8 alphabet by a number derived from the character of the hashed password for the current round and the nonce.
 ```python
-    def phase1_crypto(this, nonce, rnum, message, function):
-        encrypted_message = ""
-        for index, letter in enumerate(message):
-            offset = int(ord(this.password[index % \
+    def phase1(this, password, nonce, rnum, message, decrypt=False):
+        rnonce = rnum * ord(nonce)
+
+        def translate(index, char):
+            operation = sub if decrypt else add
+            shift = int(ord(this.password[index % \
                      (this.password.index('') - 1)])) * ord(nonce)
-            if function == "encrypt":
-                encrypted_char = chr(int(ord(letter) + offset) % this.MAX_UNICODE)
-            elif function == "decrypt":
-                encrypted_char = chr(int(ord(letter) - offset) % this.MAX_UNICODE)
-            encrypted_message = encrypted_message + encrypted_char
-        message = encrypted_message
+            result = operation(ord(char), shift)
+            return chr(result % this.MAX_UNICODE)
+
+        return ''.join(translate(index, char)
+                      for index, char in enumerate(message))
+
         if this.verbose == 2:
             print("Round " + str(rnum) + "-- Phase 1: " + message)
         return message
 ```
 
-__Phase2_Crypto__ <br \>
+__Phase2__ <br \>
 Phase 2 encrypts every fifth character in the message, starting with the one in the position of the round number modulus 5, by shifting it by a number derived from the round number, nonce, and the ordinal position of the current round's character from the hashed password divided by the length of the password.
 ```python
     def phase2(this, password, message, rnonce, rnum,
@@ -117,9 +119,9 @@ This is the core encryption/decryption algorithm, it performs a series of rounds
 ```python
     def perform_rounds(this, nonce, message, function):
         for rnum, char in enumerate(this.password):
-            message = this.phase1_crypto(nonce, rnum, message, function)
-            rnonce = rnum * ord(nonce)
             decrypt = True if function == "decrypt" else False
+            message = this.phase1(this.password, nonce, rnum, message, decrypt)
+            rnonce = rnum * ord(nonce)
             message = this.phase2(this.password, message, rnonce, rnum, decrypt)
             if this.verbose > 0:
                 print((rnum / len(this.password)) * 100, "% Complete.")
