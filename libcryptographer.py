@@ -2,7 +2,7 @@ import time
 from operator import add, sub
 
 class LibCryptographer(object):
-    MAX_UNICODE = 55000
+    MAX_UNICODE = 65534
     verbose = 0
     function = "encrypt"
 

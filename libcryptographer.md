@@ -9,7 +9,7 @@ from operator import add, sub
 __Class: LibCryptographer__
 ```python
 class LibCryptographer(object):
-    MAX_UNICODE = 55000
+    MAX_UNICODE = 65534
     verbose = 0
     function = "encrypt"
 ```
