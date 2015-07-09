@@ -2,7 +2,7 @@ import time
 from operator import add, sub
 
 class LibCryptographer(object):
-    MAX_UNICODE = 65535
+    MAX_UNICODE = 55000
     verbose = 0
     function = "encrypt"
 
@@ -34,48 +34,34 @@ class LibCryptographer(object):
         this.password = password
         return password
 
-    def phase1(this, password, nonce, rnum, message, decrypt=False):
-        rnonce = rnum * ord(nonce)
-
-        def translate(index, char):
-            operation = sub if decrypt else add
-            shift = int(ord(this.password[index % \
-                     (this.password.index('') - 1)])) * ord(nonce)
-            result = operation(ord(char), shift)
-            return chr(result % this.MAX_UNICODE)
-
-        return ''.join(translate(index, char)
-                      for index, char in enumerate(message))
-
-        if this.verbose == 2:
-            print("Round " + str(rnum) + "-- Phase 1: " + message)
-        return message
-
-    def phase2(this, password, message, rnonce, rnum,
-              decrypt=False, encrypt_idx=5):
-        start_char = rnum % encrypt_idx
-        pass_char = ord(password[rnum])
-        pass_place = int(pass_char / len(password))
-        shift = pass_place * rnonce
-
-        def translate(char):
-            operation = sub if decrypt else add
-            result = operation(ord(char), shift)
-            return chr(result % this.MAX_UNICODE)
-
-        return ''.join(char if i % encrypt_idx
-                      else translate(char)
-                      for i, char in enumerate(message, start_char))
-        if this.verbose == 2:
-              print("Round " + str(rnum) + "-- Phase 2: " + message)
-        return message
-
     def perform_rounds(this, nonce, message, function):
         for rnum, char in enumerate(this.password):
             decrypt = True if function == "decrypt" else False
-            message = this.phase1(this.password, nonce, rnum, message, decrypt)
+            encrypt_idx=5
+            
             rnonce = rnum * ord(nonce)
-            message = this.phase2(this.password, message, rnonce, rnum, decrypt)
+            start_char = rnum % encrypt_idx
+            pass_char = ord(this.password[rnum])
+            pass_place = int(pass_char / len(this.password))
+            shift = pass_place * rnonce
+            
+            def phase1(index, char):
+                operation = sub if decrypt else add
+                shift = int(ord(this.password[index % \
+                         (this.password.index('') - 1)])) * ord(nonce)
+                result = operation(ord(char), shift)
+                return chr(result % this.MAX_UNICODE)
+            
+            def phase2(char):
+                operation = sub if decrypt else add
+                result = operation(ord(char), shift)
+                return chr(result % this.MAX_UNICODE)
+            
+            return ''.join(phase1(index, char) if index % encrypt_idx
+                          else phase2(phase1(index, char))
+                          for index, char in enumerate(message, start_char))
             if this.verbose > 0:
                 print((rnum / len(this.password)) * 100, "% Complete.")
+                if this.verbose == 2:
+                      print("Round " + str(rnum) + "-- Phase 2: " + message)
         return message
