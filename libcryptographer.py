@@ -35,33 +35,31 @@ class LibCryptographer(object):
         return password
 
     def perform_rounds(this, nonce, message, function):
+        decrypt = True if function == "decrypt" else False
+        encrypt_idx=5
+        operation = sub if decrypt else add
         for rnum, char in enumerate(this.password):
-            decrypt = True if function == "decrypt" else False
-            encrypt_idx=5
-            
             rnonce = rnum * ord(nonce)
             start_char = rnum % encrypt_idx
             pass_char = ord(this.password[rnum])
             pass_place = int(pass_char / len(this.password))
-            shift = pass_place * rnonce
-            
+
             def phase1(index, char):
-                operation = sub if decrypt else add
                 shift = int(ord(this.password[index % \
                          (this.password.index('') - 1)])) * ord(nonce)
                 result = operation(ord(char), shift)
                 return chr(result % this.MAX_UNICODE)
-            
+
             def phase2(char):
-                operation = sub if decrypt else add
+                shift = pass_place * rnonce
                 result = operation(ord(char), shift)
                 return chr(result % this.MAX_UNICODE)
-            
+
             return ''.join(phase1(index, char) if index % encrypt_idx
                           else phase2(phase1(index, char))
                           for index, char in enumerate(message, start_char))
             if this.verbose > 0:
                 print((rnum / len(this.password)) * 100, "% Complete.")
                 if this.verbose == 2:
-                      print("Round " + str(rnum) + "-- Phase 2: " + message)
+                      print("Round " + str(rnum) + ": " + message)
         return message
