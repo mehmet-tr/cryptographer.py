@@ -64,7 +64,8 @@ Convert the numeric_key integer into a str then break it into sets of three to b
             n0 = int(three_set[0]) + 2
             n1 = int(three_set[1]) + 2
             n2 = int(three_set[2]) + 2
-            hashed_pass = hashed_pass + chr(((n0 ** n1) ** n2) % this.MAX_UNICODE + 48)
+            n_char = chr(((n0 ** n1) ** n2) % this.MAX_UNICODE + 48)
+            hashed_pass = hashed_pass + n_char
 ```
 Truncates the hashed_pass to the length of the keylength variable assigned by the user.
 ```python
