@@ -1,5 +1,10 @@
 #[libcryptographer.py](#libcryptographer.py "save:")
 
+__Interpreter__
+```python
+#! /usr/bin/env python3
+```
+
 __Imports__
 ```python
 import time
@@ -78,9 +83,9 @@ This is the core encryption/decryption algorithm, it performs a series of rounds
 ```python
     def perform_rounds(this, nonce, message, function):
         decrypt = True if function == "decrypt" else False
-        encrypt_idx=5
+        encrypt_idx = 5
         operation = sub if decrypt else add
-        for rnum, char in enumerate(this.password):
+        for rnum in enumerate(this.password):
             rnonce = rnum * ord(nonce)
             start_char = rnum % encrypt_idx
             pass_char = ord(this.password[rnum])
@@ -156,6 +161,6 @@ Phase 2 encrypts every fifth character in the message, starting with the one in 
             if this.verbose > 0:
                 print((rnum / len(this.password)) * 100, "% Complete.")
                 if this.verbose == 2:
-                      print("Round " + str(rnum) + ": " + message)
+                    print("Round " + str(rnum) + ": " + message)
         return message
 ```

@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 import time
 from operator import add, sub
 
@@ -36,9 +38,9 @@ class LibCryptographer(object):
 
     def perform_rounds(this, nonce, message, function):
         decrypt = True if function == "decrypt" else False
-        encrypt_idx=5
+        encrypt_idx = 5
         operation = sub if decrypt else add
-        for rnum, char in enumerate(this.password):
+        for rnum in enumerate(this.password):
             rnonce = rnum * ord(nonce)
             start_char = rnum % encrypt_idx
             pass_char = ord(this.password[rnum])
@@ -61,5 +63,5 @@ class LibCryptographer(object):
             if this.verbose > 0:
                 print((rnum / len(this.password)) * 100, "% Complete.")
                 if this.verbose == 2:
-                      print("Round " + str(rnum) + ": " + message)
+                    print("Round " + str(rnum) + ": " + message)
         return message
