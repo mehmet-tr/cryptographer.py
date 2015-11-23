@@ -41,6 +41,7 @@ class LibCryptographer(object):
         decrypt = True if function == "decrypt" else False
         encrypt_idx = 5
         operation = sub if decrypt else add
+        rnonce = 0
         for rnum in enumerate(this.password):
             rnonce = rnum[0] * ord(nonce)
             start_char = rnum[0] % encrypt_idx
