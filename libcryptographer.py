@@ -41,9 +41,9 @@ class LibCryptographer(object):
         encrypt_idx = 5
         operation = sub if decrypt else add
         for rnum in enumerate(this.password):
-            rnonce = rnum * ord(nonce)
-            start_char = rnum % encrypt_idx
-            pass_char = ord(this.password[rnum])
+            rnonce = rnum[0] * ord(nonce)
+            start_char = rnum[0] % encrypt_idx
+            pass_char = ord(this.password[rnum[0]])
             pass_place = int(pass_char / len(this.password))
 
             def phase1(index, char):
@@ -61,7 +61,7 @@ class LibCryptographer(object):
                           else phase2(phase1(index, char))
                           for index, char in enumerate(message, start_char))
             if this.verbose > 0:
-                print((rnum / len(this.password)) * 100, "% Complete.")
+                print((rnum[0] / len(this.password)) * 100, "% Complete.")
                 if this.verbose == 2:
-                    print("Round " + str(rnum) + ": " + message)
+                    print("Round " + str(rnum[0]) + ": " + message)
         return message
