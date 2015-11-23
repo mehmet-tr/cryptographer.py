@@ -58,11 +58,12 @@ class LibCryptographer(object):
                 result = operation(ord(char), shift)
                 return chr(result % this.MAX_UNICODE)
 
-            return ''.join(phase1(index, char) if index % encrypt_idx
-                          else phase2(phase1(index, char))
-                          for index, char in enumerate(message, start_char))
             if this.verbose > 0:
                 print((rnum[0] / len(this.password)) * 100, "% Complete.")
                 if this.verbose == 2:
                     print("Round " + str(rnum[0]) + ": " + message)
+
+            return ''.join(phase1(index, char) if index % encrypt_idx
+                          else phase2(phase1(index, char))
+                          for index, char in enumerate(message, start_char))
         return message
