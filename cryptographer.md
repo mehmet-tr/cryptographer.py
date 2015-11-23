@@ -120,7 +120,7 @@ def main(arguments):
         operation = "De"
 
     if output_file:
-        out_file = open(output_file, 'w')
+        out_file = open(output_file, 'w', encoding='utf-8')
         out_file.write(message)
         out_file.close()
     else:
