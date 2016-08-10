@@ -1,10 +1,5 @@
 #[libcryptographer.py](#libcryptographer.py "save:")
 
-__Interpreter__
-```python
-#! /usr/bin/env python3
-```
-
 __Imports__
 ```python
 import time
@@ -14,7 +9,7 @@ from operator import add, sub
 __Class: LibCryptographer__
 ```python
 class LibCryptographer(object):
-    MAX_UNICODE = 55000
+    MAX_UNICODE = 65534
     verbose = 0
     function = "encrypt"
 ```
@@ -64,8 +59,7 @@ Convert the numeric_key integer into a str then break it into sets of three to b
             n0 = int(three_set[0]) + 2
             n1 = int(three_set[1]) + 2
             n2 = int(three_set[2]) + 2
-            n_char = chr(((n0 ** n1) ** n2) % this.MAX_UNICODE + 48)
-            hashed_pass = hashed_pass + n_char
+            hashed_pass = hashed_pass + chr(((n0 ** n1) ** n2) % this.MAX_UNICODE + 48)
 ```
 Truncates the hashed_pass to the length of the keylength variable assigned by the user.
 ```python
@@ -84,14 +78,12 @@ This is the core encryption/decryption algorithm, it performs a series of rounds
 ```python
     def perform_rounds(this, nonce, message, function):
         decrypt = True if function == "decrypt" else False
-        encrypt_idx = 5
+        encrypt_idx=5
         operation = sub if decrypt else add
-        rnonce = 0
-        pass_place = 0
-        for rnum in enumerate(this.password):
-            rnonce = rnum[0] * ord(nonce)
-            start_char = rnum[0] % encrypt_idx
-            pass_char = ord(this.password[rnum[0]])
+        for rnum, char in enumerate(this.password):
+            rnonce = rnum * ord(nonce)
+            start_char = rnum % encrypt_idx
+            pass_char = ord(this.password[rnum])
             pass_place = int(pass_char / len(this.password))
 ```
 __Phase1__ <br \>
@@ -158,13 +150,12 @@ Phase 2 encrypts every fifth character in the message, starting with the one in 
                 result = operation(ord(char), shift)
                 return chr(result % this.MAX_UNICODE)
 
-            if this.verbose > 0:
-                print((rnum[0] / len(this.password)) * 100, "% Complete.")
-                if this.verbose == 2:
-                    print("Round " + str(rnum[0]) + ": " + message)
-
             return ''.join(phase1(index, char) if index % encrypt_idx
                           else phase2(phase1(index, char))
                           for index, char in enumerate(message, start_char))
+            if this.verbose > 0:
+                print((rnum / len(this.password)) * 100, "% Complete.")
+                if this.verbose == 2:
+                      print("Round " + str(rnum) + ": " + message)
         return message
 ```

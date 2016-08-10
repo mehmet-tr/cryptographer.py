@@ -69,6 +69,7 @@ def variables(arguments):
         verbose = 0
     return function, message, output_file, verbose, password, keylength
 
+
 def main(arguments):
     function, message, output_file, verbose, password, keylength = \
         variables(arguments)

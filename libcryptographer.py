@@ -1,10 +1,8 @@
-#! /usr/bin/env python3
-
 import time
 from operator import add, sub
 
 class LibCryptographer(object):
-    MAX_UNICODE = 55000
+    MAX_UNICODE = 35534
     verbose = 0
     function = "encrypt"
 
@@ -29,8 +27,7 @@ class LibCryptographer(object):
             n0 = int(three_set[0]) + 2
             n1 = int(three_set[1]) + 2
             n2 = int(three_set[2]) + 2
-            n_char = chr(((n0 ** n1) ** n2) % this.MAX_UNICODE + 48)
-            hashed_pass = hashed_pass + n_char
+            hashed_pass = hashed_pass + chr(((n0 ** n1) ** n2) % this.MAX_UNICODE + 48)
         password = hashed_pass[:int(keylength)]
         if this.verbose == 2:
             print("Hashed password: " + password)
@@ -39,14 +36,13 @@ class LibCryptographer(object):
 
     def perform_rounds(this, nonce, message, function):
         decrypt = True if function == "decrypt" else False
-        encrypt_idx = 5
+        encrypt_idx=5
         operation = sub if decrypt else add
-        rnonce = 0
-        pass_place = 0
-        for rnum in enumerate(this.password):
-            rnonce = rnum[0] * ord(nonce)
-            start_char = rnum[0] % encrypt_idx
-            pass_char = ord(this.password[rnum[0]])
+        rnum = 0
+        for char in this.password:
+            rnonce = rnum * ord(nonce)
+            start_char = rnum % encrypt_idx
+            pass_char = ord(this.password[rnum])
             pass_place = int(pass_char / len(this.password))
 
             def phase1(index, char):
@@ -60,12 +56,13 @@ class LibCryptographer(object):
                 result = operation(ord(char), shift)
                 return chr(result % this.MAX_UNICODE)
 
-            if this.verbose > 0:
-                print((rnum[0] / len(this.password)) * 100, "% Complete.")
-                if this.verbose == 2:
-                    print("Round " + str(rnum[0]) + ": " + message)
-
-            return ''.join(phase1(index, char) if index % encrypt_idx
+            message = ''.join(phase1(index, char) if index % encrypt_idx
                           else phase2(phase1(index, char))
                           for index, char in enumerate(message, start_char))
+                          
+            if this.verbose > 0:
+                print((rnum / len(this.password)) * 100 % 100, "% Complete.")
+                if this.verbose == 2:
+                      print("Round " + str(rnum) + ": " + message)
+            rnum += 1
         return message
