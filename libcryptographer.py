@@ -2,7 +2,7 @@ import time
 from operator import add, sub
 
 class LibCryptographer(object):
-    MAX_UNICODE = 65534
+    MAX_UNICODE = 55000
     verbose = 0
     function = "encrypt"
 
@@ -38,7 +38,8 @@ class LibCryptographer(object):
         decrypt = True if function == "decrypt" else False
         encrypt_idx=5
         operation = sub if decrypt else add
-        for rnum, char in enumerate(this.password):
+        rnum = 0
+        for char in this.password:
             rnonce = rnum * ord(nonce)
             start_char = rnum % encrypt_idx
             pass_char = ord(this.password[rnum])
@@ -55,11 +56,13 @@ class LibCryptographer(object):
                 result = operation(ord(char), shift)
                 return chr(result % this.MAX_UNICODE)
 
-            return ''.join(phase1(index, char) if index % encrypt_idx
+            message = ''.join(phase1(index, char) if index % encrypt_idx
                           else phase2(phase1(index, char))
                           for index, char in enumerate(message, start_char))
+                          
             if this.verbose > 0:
-                print((rnum / len(this.password)) * 100, "% Complete.")
+                print((rnum / len(this.password)) * 100 % 100, "% Complete.")
                 if this.verbose == 2:
                       print("Round " + str(rnum) + ": " + message)
+            rnum += 1
         return message
