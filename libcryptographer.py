@@ -2,7 +2,7 @@ import time
 from operator import add, sub
 
 class LibCryptographer(object):
-    MAX_UNICODE = 35534
+    MAX_UNICODE = 55000
     verbose = 0
     function = "encrypt"
 
@@ -47,7 +47,7 @@ class LibCryptographer(object):
 
             def phase1(index, char):
                 shift = int(ord(this.password[index % \
-                         (this.password.index('') - 1)])) * ord(nonce)
+                        (len(this.password) - 1)])) * ord(nonce)
                 result = operation(ord(char), shift)
                 return chr(result % this.MAX_UNICODE)
 
@@ -56,9 +56,10 @@ class LibCryptographer(object):
                 result = operation(ord(char), shift)
                 return chr(result % this.MAX_UNICODE)
 
-            message = ''.join(phase1(index, char) if index % encrypt_idx
-                          else phase2(phase1(index, char))
-                          for index, char in enumerate(message, start_char))
+            message = ''.join(phase1(index, char) 
+                      if index % encrypt_idx == 0
+                      else phase2(phase1(index, char))
+                      for index, char in enumerate(message, start_char))
                           
             if this.verbose > 0:
                 print((rnum / len(this.password)) * 100 % 100, "% Complete.")

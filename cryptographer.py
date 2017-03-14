@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sys
 import os
 import argparse
 import libcryptographer
@@ -16,12 +17,14 @@ parser.add_argument('-p', '--password', required=True, help='The passphase\
 parser.add_argument('-k', '--key', required=True, help='Determine key length.\
                     Suggested values between 10 and 1000, very high key \
                     lengths will take a long time.')
-message = parser.add_mutually_exclusive_group(required=True)
+message = parser.add_mutually_exclusive_group(required=False)
 message.add_argument('-m', '--message', help='The message to be \
-                     encrypted/decrypted. Messages must be inside \
-                     quotation marks.')
+					 encrypted/decrypted. Messages must be inside \
+					 quotation marks.')
 message.add_argument('-i', '--inputfile', help='The file to be\
-                     encrypted/decrypted.')
+					 encrypted/decrypted.')
+
+
 parser.add_argument('-o', '--outputfile', help='The file in which to save the\
                     encrypted/decrypted message. If none is given, message \
                     will be printed to screen.')
@@ -50,18 +53,28 @@ def variables(arguments):
     if keylength < 1:
         print("The key length must be greater than 0")
         exit(1)
-    if arguments.inputfile:
-        if os.path.isfile(arguments.inputfile):
-            in_file = open(arguments.inputfile)
-            message = in_file.read()
-        else:
-            print("No such file as", arguments.inputfile)
-            exit(1)
-    elif arguments.message:
-        message = args.message
+    if sys.stdin.isatty():
+	    if arguments.inputfile:
+		    if os.path.isfile(arguments.inputfile):
+			    in_file = open(arguments.inputfile)
+			    message = in_file.read()
+		    else:
+			    print("No such file as", arguments.inputfile)
+			    exit(1)
+	    elif arguments.message:
+		    message = args.message
+	    else:
+		    print("Enter a message (-m) or specify a input file (-i).")
+		    exit(1)
     else:
-        print("Enter a message (-m) or specify a input file (-i).")
-        exit(1)
+	    if arguments.inputfile:
+		    print("Cannot accept input files while accepting piped input.")
+		    exit(1)
+	    elif arguments.message:
+		    print("Cannot accept the message argument while accepting piped input.")
+		    exit(1)
+	    else:
+		    message = sys.stdin.read()
     output_file = arguments.outputfile
     if args.verbose:
         verbose = int(arguments.verbose)

@@ -70,7 +70,7 @@ cryptographer.py -e -p “secret code words” -k 15 -i secret_file.txt -o encry
 
 ##### To decrypt the filed called “encrypted_file.txt” and write the output to “decrypted_file.txt”:
 
-cryptographer.py -e -p “secret code words” -k 15 -i encrypted_file.txt -o decrypted_file.txt
+cryptographer.py -d -p “secret code words” -k 15 -i encrypted_file.txt -o decrypted_file.txt
 
 ### Usage tips:
 
