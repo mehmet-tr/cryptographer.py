@@ -26,7 +26,7 @@ See accompanying LICENSE file for the full license.
 
 ### Bounty:
 
-One bitcoin will be paid out to whom so ever can responsibly disclose a method by which the 
+One tenth of a bitcoin will be paid out to whom so ever can responsibly disclose a method by which the 
 bounty.encrypt can be decrypted without knowledge of the password or key length and within a
 reasonable time frame on a modern computer (or cluster of computers).  
 
