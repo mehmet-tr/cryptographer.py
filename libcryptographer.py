@@ -1,7 +1,10 @@
 import time
 from operator import add, sub
+"""This library depends on the time and operator modules."""
 
 class LibCryptographer(object):
+    """The LibCryptographer is a module for other python programs
+    wishing to encrypt/decrypt using the cryptographer algorythm."""
     MAX_UNICODE = 55000
     verbose = 0
     function = "encrypt"
